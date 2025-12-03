@@ -1,0 +1,703 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║   WALLET - PLAN DE DESARROLLO GUI                                ║
+║   Interfaz Gráfica Minimalista y Profesional                     ║
+║                                                                  ║
+║   Version: 2.0.0                                                 ║
+║   Fecha Inicio: 2025-12-01                                       ║
+║   Arquitectura: JavaFX + Clean Architecture                      ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════
+ VISIÓN GENERAL
+═══════════════════════════════════════════════════════════════════
+
+OBJETIVO
+  Transformar la aplicación de consola en una aplicación de
+  escritorio moderna con interfaz gráfica minimalista, manteniendo
+  la arquitectura limpia existente.
+
+TECNOLOGÍA PRINCIPAL
+  JavaFX 21 - Framework moderno para interfaces gráficas en Java
+
+FILOSOFÍA DE DISEÑO
+  • Minimalista: Solo lo esencial, sin elementos innecesarios
+  • Profesional: Aspecto corporativo, confiable, serio
+  • Moderno: Diseño flat, sombras sutiles, animaciones suaves
+  • Intuitivo: Navegación clara, feedback visual inmediato
+  • Responsive: Adaptable a diferentes resoluciones
+
+
+═══════════════════════════════════════════════════════════════════
+ PALETA DE COLORES - DISEÑO SERIO Y MINIMALISTA
+═══════════════════════════════════════════════════════════════════
+
+COLORES PRINCIPALES
+┌────────────────────────────────────────────────────────────────┐
+│ Primario (Azul Oscuro)    #1E3A5F  ■  Confianza, profesional  │
+│ Secundario (Azul Medio)   #2E5C8A  ■  Acciones importantes    │
+│ Acento (Azul Brillante)   #4A90E2  ■  Interacciones, links    │
+│ Éxito (Verde)             #4CAF50  ■  Confirmaciones          │
+│ Advertencia (Naranja)     #FF9800  ■  Alertas                 │
+│ Error (Rojo)              #F44336  ■  Errores críticos        │
+│ Dinero (Verde Menta)      #00BFA5  ■  Montos, saldos          │
+└────────────────────────────────────────────────────────────────┘
+
+COLORES NEUTRALES
+┌────────────────────────────────────────────────────────────────┐
+│ Fondo Principal           #FAFAFA  ■  Background claro        │
+│ Fondo Secundario          #FFFFFF  ■  Cards, paneles          │
+│ Fondo Oscuro              #263238  ■  Header, sidebar         │
+│ Texto Principal           #212121  ■  Títulos, contenido      │
+│ Texto Secundario          #757575  ■  Subtítulos, hints       │
+│ Texto Claro               #FFFFFF  ■  Texto sobre oscuro      │
+│ Borde Suave               #E0E0E0  ■  Separadores             │
+│ Hover                     #F5F5F5  ■  Estados hover           │
+└────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════
+ TIPOGRAFÍA
+═══════════════════════════════════════════════════════════════════
+
+FUENTES
+  Principal: Segoe UI (Windows) / San Francisco (Mac) / Roboto (Linux)
+  Monoespaciada: Consolas / Menlo / Monaco (para números de cuenta)
+  Fallback: Arial, Helvetica, sans-serif
+
+TAMAÑOS
+  • Título Principal: 28px, Bold
+  • Título Sección: 20px, Semi-Bold
+  • Subtítulo: 16px, Medium
+  • Texto Normal: 14px, Regular
+  • Texto Pequeño: 12px, Regular
+  • Números/Montos: 18px, Bold, Monospace
+
+
+═══════════════════════════════════════════════════════════════════
+ ARQUITECTURA GUI - INTEGRACIÓN CON CLEAN ARCHITECTURE
+═══════════════════════════════════════════════════════════════════
+
+ESTRUCTURA DE CAPAS ACTUALIZADA
+┌────────────────────────────────────────────────────────────────┐
+│                    PRESENTATION LAYER                          │
+│  ┌──────────────────┐    ┌───────────────────────────────┐    │
+│  │   Console UI     │    │      JavaFX GUI               │    │
+│  │   (Existente)    │    │   ┌───────────────────────┐   │    │
+│  │                  │    │   │  Views (FXML)         │   │    │
+│  │  - MenuPrincipal │    │   │  - LoginView          │   │    │
+│  │  - MenuUsuarios  │    │   │  - DashboardView      │   │    │
+│  │  - MenuCuentas   │    │   │  - UsuariosView       │   │    │
+│  │  - Controllers   │    │   │  - CuentasView        │   │    │
+│  │                  │    │   │  - TransaccionesView  │   │    │
+│  └──────────────────┘    │   └───────────────────────┘   │    │
+│                          │   ┌───────────────────────┐   │    │
+│                          │   │  Controllers (JavaFX) │   │    │
+│                          │   │  - MainController     │   │    │
+│                          │   │  - UsuarioController  │   │    │
+│                          │   │  - CuentaController   │   │    │
+│                          │   └───────────────────────┘   │    │
+│                          │   ┌───────────────────────┐   │    │
+│                          │   │  Components           │   │    │
+│                          │   │  - CardComponent      │   │    │
+│                          │   │  - TableComponent     │   │    │
+│                          │   │  - FormComponent      │   │    │
+│                          │   └───────────────────────┘   │    │
+│                          └───────────────────────────────┘    │
+├────────────────────────────────────────────────────────────────┤
+│                    APPLICATION LAYER                           │
+│  • Use Cases (SIN CAMBIOS)                                     │
+│  • DTOs (SIN CAMBIOS)                                          │
+│  • Mappers (SIN CAMBIOS)                                       │
+├────────────────────────────────────────────────────────────────┤
+│                    DOMAIN LAYER                                │
+│  • Entities (SIN CAMBIOS)                                      │
+│  • Value Objects (SIN CAMBIOS)                                 │
+│  • Repository Interfaces (SIN CAMBIOS)                         │
+├────────────────────────────────────────────────────────────────┤
+│                    INFRASTRUCTURE LAYER                        │
+│  • Repository Implementations (SIN CAMBIOS)                    │
+│  • Services (SIN CAMBIOS)                                      │
+│  • Factory (SIN CAMBIOS)                                       │
+└────────────────────────────────────────────────────────────────┘
+
+VENTAJAS DE ESTA ARQUITECTURA
+✓ Múltiples UIs (Console + GUI) usando misma lógica
+✓ Sin cambios en Domain, Application, Infrastructure
+✓ Fácil testing (JavaFX controllers aislados)
+✓ Clean Architecture preservada al 100%
+
+
+═══════════════════════════════════════════════════════════════════
+ PLAN DE DESARROLLO - 6 ETAPAS
+═══════════════════════════════════════════════════════════════════
+
+📋 ETAPA 1: CONFIGURACIÓN Y SETUP (2-3 horas)
+─────────────────────────────────────────────────────────────
+Objetivo: Preparar el entorno para desarrollo JavaFX
+
+Tareas:
+  ✓ Descargar JavaFX SDK 21
+  ✓ Configurar scripts de compilación y ejecución
+  ✓ Crear estructura de carpetas GUI
+  ✓ Configurar Scene Builder (opcional, para diseño visual)
+  ✓ Crear aplicación "Hello World" con JavaFX
+  ✓ Validar que JavaFX funciona correctamente
+
+Archivos a Crear:
+  • download-javafx.ps1           (Descargar JavaFX SDK)
+  • compile-gui.ps1               (Compilar con JavaFX)
+  • run-gui.ps1                   (Ejecutar GUI)
+  • src/gui/MainApp.java          (Entry point JavaFX)
+  • src/gui/resources/styles.css  (Estilos base)
+
+Entregables:
+  ✓ JavaFX SDK descargado y configurado
+  ✓ Scripts funcionales
+  ✓ Ventana de prueba ejecutándose
+
+Duración Estimada: 2-3 horas
+
+
+📋 ETAPA 2: DISEÑO DE COMPONENTES BASE (3-4 horas)
+─────────────────────────────────────────────────────────────
+Objetivo: Crear componentes reutilizables y sistema de estilos
+
+Tareas:
+  ✓ Crear archivo CSS principal con paleta de colores
+  ✓ Diseñar componentes base reutilizables
+  ✓ Implementar utilidades GUI
+  ✓ Crear sistema de notificaciones/alertas
+  ✓ Diseñar layouts base (Header, Sidebar, Content)
+
+Componentes a Crear:
+  • WalletButton.java             (Botones estilizados)
+  • WalletTextField.java          (Campos de texto)
+  • WalletCard.java               (Cards para información)
+  • WalletTable.java              (Tablas de datos)
+  • NotificationManager.java      (Alertas/Toasts)
+  • LoadingIndicator.java         (Spinners de carga)
+
+Archivos CSS:
+  • main.css                      (Estilos principales)
+  • components.css                (Estilos de componentes)
+  • animations.css                (Transiciones)
+
+Entregables:
+  ✓ Biblioteca de componentes reutilizables
+  ✓ Sistema de estilos consistente
+  ✓ Componentes documentados
+
+Duración Estimada: 3-4 horas
+
+
+📋 ETAPA 3: PANTALLA PRINCIPAL Y DASHBOARD (4-5 horas)
+─────────────────────────────────────────────────────────────
+Objetivo: Implementar la interfaz principal de la aplicación
+
+Tareas:
+  ✓ Diseñar layout principal (Header + Sidebar + Content)
+  ✓ Implementar Dashboard con métricas
+  ✓ Crear navegación entre secciones
+  ✓ Implementar menú lateral
+  ✓ Agregar animaciones de transición
+
+Pantallas:
+  • MainView.fxml                 (Layout principal)
+  • DashboardView.fxml            (Dashboard home)
+  
+Controladores:
+  • MainViewController.java       (Control de navegación)
+  • DashboardController.java      (Lógica del dashboard)
+
+Elementos del Dashboard:
+  ┌──────────────────────────────────────────────────────┐
+  │  💳 DASHBOARD                                        │
+  ├──────────────────────────────────────────────────────┤
+  │  ┌────────────┐  ┌────────────┐  ┌────────────┐    │
+  │  │   Total    │  │   Cuentas  │  │   Usuarios │    │
+  │  │  Usuarios  │  │   Activas  │  │   Activos  │    │
+  │  │     45     │  │     128    │  │     42     │    │
+  │  └────────────┘  └────────────┘  └────────────┘    │
+  │                                                      │
+  │  Actividad Reciente:                                │
+  │  ┌────────────────────────────────────────────┐    │
+  │  │ • Juan Perez - Depósito $500.00            │    │
+  │  │ • Maria Garcia - Retiro $200.00            │    │
+  │  │ • Carlos Lopez - Transferencia $300.00     │    │
+  │  └────────────────────────────────────────────┘    │
+  └──────────────────────────────────────────────────────┘
+
+Entregables:
+  ✓ Interfaz principal funcional
+  ✓ Dashboard con métricas en tiempo real
+  ✓ Navegación fluida
+
+Duración Estimada: 4-5 horas
+
+
+📋 ETAPA 4: GESTIÓN DE USUARIOS (3-4 horas)
+─────────────────────────────────────────────────────────────
+Objetivo: Implementar CRUD completo de usuarios con GUI
+
+Tareas:
+  ✓ Vista de lista de usuarios (tabla)
+  ✓ Formulario de creación de usuarios
+  ✓ Formulario de edición de usuarios
+  ✓ Búsqueda y filtros
+  ✓ Validación en tiempo real
+
+Pantallas:
+  • UsuariosView.fxml             (Lista + Formularios)
+  
+Controlador:
+  • UsuariosViewController.java   (CRUD usuarios)
+
+Diseño de Vista:
+  ┌──────────────────────────────────────────────────────┐
+  │  👤 GESTIÓN DE USUARIOS              [+ Nuevo]       │
+  ├──────────────────────────────────────────────────────┤
+  │  [🔍 Buscar...]                     [Filtros ▼]     │
+  │                                                      │
+  │  ┌────────────────────────────────────────────────┐ │
+  │  │ ID         Nombre           Email      Estado  │ │
+  │  ├────────────────────────────────────────────────┤ │
+  │  │ 550e...    Juan Perez       juan@...   ✓       │ │
+  │  │ 660f...    Maria Garcia     maria@...  ✓       │ │
+  │  │ 770g...    Carlos Lopez     carlos@... ✓       │ │
+  │  └────────────────────────────────────────────────┘ │
+  │                                      [< 1 2 3 >]    │
+  └──────────────────────────────────────────────────────┘
+
+Formulario (Modal):
+  ┌────────────────────────────────────────┐
+  │  Nuevo Usuario                    [X]  │
+  ├────────────────────────────────────────┤
+  │  Nombre:     [________________]        │
+  │  Apellido:   [________________]        │
+  │  Email:      [________________]        │
+  │  Documento:  [DNI ▼] [________]        │
+  │                                        │
+  │        [Cancelar]  [Guardar]          │
+  └────────────────────────────────────────┘
+
+Entregables:
+  ✓ CRUD completo de usuarios
+  ✓ Validaciones en tiempo real
+  ✓ Búsqueda funcional
+
+Duración Estimada: 3-4 horas
+
+
+📋 ETAPA 5: GESTIÓN DE CUENTAS Y TRANSACCIONES (4-5 horas)
+─────────────────────────────────────────────────────────────
+Objetivo: Implementar operaciones bancarias con GUI
+
+Tareas:
+  ✓ Vista de lista de cuentas
+  ✓ Formularios de creación de cuentas
+  ✓ Formularios de depósito/retiro
+  ✓ Vista de transferencias
+  ✓ Historial de transacciones
+  ✓ Visualización de saldos
+
+Pantallas:
+  • CuentasView.fxml              (Lista de cuentas)
+  • TransaccionesView.fxml        (Operaciones)
+  • HistorialView.fxml            (Historial)
+  
+Controladores:
+  • CuentasViewController.java    (Gestión cuentas)
+  • TransaccionesViewController.java (Operaciones)
+
+Diseño de Cuentas:
+  ┌──────────────────────────────────────────────────────┐
+  │  💳 CUENTAS                          [+ Nueva]       │
+  ├──────────────────────────────────────────────────────┤
+  │  ┌────────────────┐  ┌────────────────┐            │
+  │  │ Cuenta Principal│  │ Cuenta Ahorro  │            │
+  │  │ #1234567890    │  │ #9876543210    │            │
+  │  │ PEN 5,420.50   │  │ PEN 12,300.00  │            │
+  │  │ [Ver] [Operar] │  │ [Ver] [Operar] │            │
+  │  └────────────────┘  └────────────────┘            │
+  └──────────────────────────────────────────────────────┘
+
+Formulario de Operación:
+  ┌────────────────────────────────────────┐
+  │  Realizar Operación              [X]   │
+  ├────────────────────────────────────────┤
+  │  Operación: [Depósito ▼]              │
+  │  Cuenta:    [1234567890 ▼]            │
+  │  Monto:     [____________] PEN        │
+  │  Descripción: [___________________]   │
+  │                                        │
+  │  Saldo Actual:    PEN 5,420.50        │
+  │  Nuevo Saldo:     PEN 5,920.50        │
+  │                                        │
+  │        [Cancelar]  [Confirmar]        │
+  └────────────────────────────────────────┘
+
+Entregables:
+  ✓ Gestión completa de cuentas
+  ✓ Operaciones (depósito/retiro/transferencia)
+  ✓ Historial visual de transacciones
+
+Duración Estimada: 4-5 horas
+
+
+📋 ETAPA 6: PULIDO Y OPTIMIZACIÓN (2-3 horas)
+─────────────────────────────────────────────────────────────
+Objetivo: Refinar la experiencia de usuario
+
+Tareas:
+  ✓ Agregar animaciones suaves
+  ✓ Implementar temas (claro/oscuro)
+  ✓ Agregar atajos de teclado
+  ✓ Optimizar rendimiento
+  ✓ Agregar tooltips y ayuda contextual
+  ✓ Testing de usabilidad
+  ✓ Documentación de GUI
+
+Mejoras:
+  • Transiciones entre vistas
+  • Loading states
+  • Error handling visual
+  • Confirmaciones de acciones
+  • Mensajes de éxito/error elegantes
+  • Modo oscuro (opcional)
+
+Entregables:
+  ✓ Aplicación pulida y profesional
+  ✓ Experiencia de usuario fluida
+  ✓ Documentación GUI completa
+
+Duración Estimada: 2-3 horas
+
+
+═══════════════════════════════════════════════════════════════════
+ ESTRUCTURA DE ARCHIVOS GUI
+═══════════════════════════════════════════════════════════════════
+
+wallet/
+├── src/
+│   ├── gui/                           (Nueva carpeta)
+│   │   ├── MainApp.java              (Entry point JavaFX)
+│   │   │
+│   │   ├── controllers/              (Controladores JavaFX)
+│   │   │   ├── MainViewController.java
+│   │   │   ├── DashboardController.java
+│   │   │   ├── UsuariosViewController.java
+│   │   │   ├── CuentasViewController.java
+│   │   │   └── TransaccionesViewController.java
+│   │   │
+│   │   ├── views/                    (Archivos FXML)
+│   │   │   ├── MainView.fxml
+│   │   │   ├── DashboardView.fxml
+│   │   │   ├── UsuariosView.fxml
+│   │   │   ├── CuentasView.fxml
+│   │   │   └── TransaccionesView.fxml
+│   │   │
+│   │   ├── components/               (Componentes reutilizables)
+│   │   │   ├── WalletButton.java
+│   │   │   ├── WalletTextField.java
+│   │   │   ├── WalletCard.java
+│   │   │   ├── WalletTable.java
+│   │   │   ├── NotificationManager.java
+│   │   │   └── LoadingIndicator.java
+│   │   │
+│   │   ├── utils/                    (Utilidades GUI)
+│   │   │   ├── NavigationManager.java
+│   │   │   ├── ValidationHelper.java
+│   │   │   ├── FormatHelper.java
+│   │   │   └── AnimationHelper.java
+│   │   │
+│   │   └── resources/                (Recursos)
+│   │       ├── css/
+│   │       │   ├── main.css
+│   │       │   ├── components.css
+│   │       │   └── animations.css
+│   │       │
+│   │       ├── images/
+│   │       │   ├── logo.png
+│   │       │   └── icons/
+│   │       │
+│   │       └── fonts/
+│   │
+│   ├── main/                         (Código existente)
+│   │   └── java/com/wallet/
+│   │       ├── Main.java             (Console UI)
+│   │       ├── domain/
+│   │       ├── application/
+│   │       ├── infrastructure/
+│   │       └── presentation/
+│   │
+│   └── test/
+│
+├── lib/
+│   ├── javafx-sdk-21/                (JavaFX SDK)
+│   │   ├── javafx.base.jar
+│   │   ├── javafx.controls.jar
+│   │   ├── javafx.fxml.jar
+│   │   ├── javafx.graphics.jar
+│   │   └── javafx.media.jar
+│   │
+│   └── junit...                      (Tests existentes)
+│
+├── scripts/
+│   ├── download-javafx.ps1           (Nuevo)
+│   ├── compile-gui.ps1               (Nuevo)
+│   ├── run-gui.ps1                   (Nuevo)
+│   ├── compile.ps1                   (Existente)
+│   ├── test.ps1                      (Existente)
+│   └── run.ps1                       (Existente)
+│
+└── docs/
+    ├── GUI_DESIGN.md                 (Guía de diseño)
+    ├── GUI_COMPONENTS.md             (Documentación componentes)
+    └── GUI_USAGE.md                  (Manual de usuario)
+
+
+═══════════════════════════════════════════════════════════════════
+ WIREFRAMES Y MOCKUPS
+═══════════════════════════════════════════════════════════════════
+
+PANTALLA PRINCIPAL (MainView)
+┌──────────────────────────────────────────────────────────────────┐
+│  ╔═══════════════════════════════════════════════════════════╗  │
+│  ║ 💳 WALLET                                    [_] [□] [X]  ║  │
+│  ╠═══════════════════════════════════════════════════════════╣  │
+│  ║ ┌─────────────┐ ┌──────────────────────────────────────┐ ║  │
+│  ║ │             │ │                                      │ ║  │
+│  ║ │  Dashboard  │ │         CONTENIDO PRINCIPAL          │ ║  │
+│  ║ │  ─────────  │ │                                      │ ║  │
+│  ║ │             │ │  (Aquí se cargan las diferentes      │ ║  │
+│  ║ │  Usuarios   │ │   vistas según la navegación)        │ ║  │
+│  ║ │             │ │                                      │ ║  │
+│  ║ │  Cuentas    │ │                                      │ ║  │
+│  ║ │             │ │                                      │ ║  │
+│  ║ │  Transacc.  │ │                                      │ ║  │
+│  ║ │             │ │                                      │ ║  │
+│  ║ │  ───────    │ │                                      │ ║  │
+│  ║ │             │ │                                      │ ║  │
+│  ║ │  Salir      │ │                                      │ ║  │
+│  ║ │             │ │                                      │ ║  │
+│  ║ └─────────────┘ └──────────────────────────────────────┘ ║  │
+│  ╚═══════════════════════════════════════════════════════════╝  │
+└──────────────────────────────────────────────────────────────────┘
+
+
+DASHBOARD (Vista Home)
+┌──────────────────────────────────────────────────────────────────┐
+│  💳 DASHBOARD                                                    │
+│  ──────────────────────────────────────────────────────────────  │
+│                                                                  │
+│  Resumen General                                                 │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐    │
+│  │   📊 Total     │  │   💳 Cuentas   │  │   👤 Usuarios  │    │
+│  │   Usuarios     │  │   Activas      │  │   Nuevos Hoy   │    │
+│  │                │  │                │  │                │    │
+│  │      45        │  │      128       │  │       3        │    │
+│  └────────────────┘  └────────────────┘  └────────────────┘    │
+│                                                                  │
+│  Actividad Reciente                                              │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │ 🟢 Juan Perez realizó un depósito de PEN 500.00         │   │
+│  │    Hace 5 minutos                                        │   │
+│  ├──────────────────────────────────────────────────────────┤   │
+│  │ 🔵 Maria Garcia realizó una transferencia de PEN 300.00 │   │
+│  │    Hace 15 minutos                                       │   │
+│  ├──────────────────────────────────────────────────────────┤   │
+│  │ 🟡 Carlos Lopez retiró PEN 200.00                       │   │
+│  │    Hace 1 hora                                           │   │
+│  └──────────────────────────────────────────────────────────┘   │
+└──────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════
+ TECNOLOGÍAS Y HERRAMIENTAS
+═══════════════════════════════════════════════════════════════════
+
+FRAMEWORK GUI
+  • JavaFX 21                  (Framework GUI moderno)
+  • FXML                       (Definición declarativa de UI)
+  • Scene Builder (Opcional)   (Editor visual de FXML)
+
+ESTILOS
+  • CSS3                       (Estilos personalizados)
+  • Material Design Icons      (Iconografía)
+
+BUILD Y DEPLOYMENT
+  • PowerShell Scripts         (Compilación y ejecución)
+  • jpackage (Futuro)          (Empaquetado nativo)
+
+TESTING
+  • TestFX                     (Testing de GUI JavaFX)
+  • JUnit 5                    (Tests existentes)
+
+
+═══════════════════════════════════════════════════════════════════
+ CARACTERÍSTICAS CLAVE DE LA GUI
+═══════════════════════════════════════════════════════════════════
+
+✨ INTERFAZ MODERNA
+  • Diseño flat con sombras sutiles
+  • Colores profesionales y minimalistas
+  • Tipografía clara y legible
+  • Espaciado generoso
+
+⚡ EXPERIENCIA FLUIDA
+  • Animaciones suaves (fade, slide)
+  • Transiciones entre vistas
+  • Loading states visuales
+  • Feedback inmediato
+
+🎯 USABILIDAD
+  • Navegación intuitiva
+  • Formularios con validación en tiempo real
+  • Mensajes de error claros
+  • Confirmaciones de acciones importantes
+  • Atajos de teclado
+
+📊 VISUALIZACIÓN DE DATOS
+  • Tablas ordenables y filtrables
+  • Cards informativos
+  • Gráficos de métricas (futuro)
+  • Búsqueda en tiempo real
+
+🔒 SEGURIDAD VISUAL
+  • Confirmaciones para acciones críticas
+  • Indicadores de estado
+  • Mensajes de advertencia
+  • Validaciones visuales
+
+
+═══════════════════════════════════════════════════════════════════
+ CRONOGRAMA Y ESTIMACIÓN
+═══════════════════════════════════════════════════════════════════
+
+┌─────────────┬──────────────────────────────┬──────────┬──────────┐
+│ Etapa       │ Descripción                  │ Duración │ Progreso │
+├─────────────┼──────────────────────────────┼──────────┼──────────┤
+│ Etapa 1     │ Configuración y Setup        │ 2-3h     │ ⬜ 0%    │
+│ Etapa 2     │ Componentes Base             │ 3-4h     │ ⬜ 0%    │
+│ Etapa 3     │ Pantalla Principal/Dashboard │ 4-5h     │ ⬜ 0%    │
+│ Etapa 4     │ Gestión de Usuarios          │ 3-4h     │ ⬜ 0%    │
+│ Etapa 5     │ Cuentas y Transacciones      │ 4-5h     │ ⬜ 0%    │
+│ Etapa 6     │ Pulido y Optimización        │ 2-3h     │ ⬜ 0%    │
+├─────────────┴──────────────────────────────┼──────────┼──────────┤
+│ TOTAL                                      │ 18-24h   │ ⬜ 0%    │
+└────────────────────────────────────────────┴──────────┴──────────┘
+
+DISTRIBUCIÓN IDEAL
+  • 1 semana: 3-4 horas/día → 6-7 días
+  • 2 semanas: 2 horas/día → 9-12 días
+  • Sprint intensivo: 8 horas/día → 2-3 días
+
+
+═══════════════════════════════════════════════════════════════════
+ VENTAJAS DE LA SOLUCIÓN
+═══════════════════════════════════════════════════════════════════
+
+✅ ARQUITECTURA PRESERVADA
+   • Clean Architecture intacta
+   • Sin cambios en Domain/Application/Infrastructure
+   • Solo se agrega nueva capa de Presentation (GUI)
+
+✅ COEXISTENCIA
+   • Console UI y GUI pueden coexistir
+   • run.ps1 → Console UI
+   • run-gui.ps1 → GUI
+
+✅ REUTILIZACIÓN
+   • Mismos Services, Use Cases, DTOs
+   • Mismos repositorios
+   • 100% del código de negocio reutilizado
+
+✅ TESTING
+   • Tests existentes siguen funcionando
+   • GUI testeable con TestFX
+   • Cobertura mantenida
+
+✅ PROFESIONALISMO
+   • Aspecto corporativo
+   • Usabilidad mejorada
+   • Experiencia moderna
+
+
+═══════════════════════════════════════════════════════════════════
+ CONSIDERACIONES TÉCNICAS
+═══════════════════════════════════════════════════════════════════
+
+REQUISITOS DEL SISTEMA
+  • Java 21 (ya instalado)
+  • JavaFX SDK 21 (~50 MB)
+  • Windows 10/11 (o Linux/Mac con JavaFX)
+  • Mínimo 4 GB RAM
+  • Resolución mínima: 1280x720
+
+TAMAÑO DEL PROYECTO
+  • Código GUI: ~3,000 líneas adicionales
+  • Archivos FXML: ~1,500 líneas
+  • CSS: ~800 líneas
+  • Total nuevo código: ~5,300 líneas
+
+RENDIMIENTO
+  • Inicio rápido (<2 segundos)
+  • Transiciones suaves (60 FPS)
+  • Consumo memoria: <100 MB
+  • CPU: <5% en idle
+
+
+═══════════════════════════════════════════════════════════════════
+ FUTURAS MEJORAS (POST v2.0)
+═══════════════════════════════════════════════════════════════════
+
+🔮 FASE 2 (v2.1)
+  • Gráficos y estadísticas (Charts)
+  • Exportación de reportes (PDF/Excel)
+  • Impresión de recibos
+  • Tema oscuro completo
+
+🔮 FASE 3 (v2.2)
+  • Modo multi-ventana
+  • Notificaciones del sistema
+  • Búsqueda global avanzada
+  • Atajos de teclado personalizables
+
+🔮 FASE 4 (v3.0)
+  • API REST para backend
+  • Base de datos real (PostgreSQL)
+  • Autenticación de usuarios
+  • Multi-idioma (i18n)
+
+
+═══════════════════════════════════════════════════════════════════
+ CONCLUSIÓN
+═══════════════════════════════════════════════════════════════════
+
+Este plan transforma Wallet de una aplicación de consola funcional
+a una aplicación de escritorio moderna y profesional, manteniendo
+la excelente arquitectura existente.
+
+PUNTOS CLAVE:
+• Diseño minimalista y profesional
+• Arquitectura limpia preservada
+• Reutilización total del código de negocio
+• 18-24 horas de desarrollo
+• Experiencia de usuario moderna
+
+RESULTADO ESPERADO:
+Una aplicación de escritorio con aspecto corporativo, intuitiva,
+rápida y profesional, que demuestra dominio tanto de arquitectura
+de software como de diseño de interfaces modernas.
+
+Estado: 📋 PLANIFICADO - Listo para iniciar desarrollo
+
+
+═══════════════════════════════════════════════════════════════════
+  ¿LISTO PARA COMENZAR? 🚀
+  
+  Siguiente paso: Ejecutar Etapa 1 (Configuración y Setup)
+═══════════════════════════════════════════════════════════════════
