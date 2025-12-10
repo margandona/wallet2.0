@@ -178,4 +178,11 @@ public class ConsoleUtils {
     public static String formatMoney(BigDecimal amount) {
         return String.format("$%.2f", amount);
     }
+    
+    /**
+     * Obtiene el scanner compartido.
+     */
+    public static Scanner getScanner() {
+        return scanner;
+    }
 }

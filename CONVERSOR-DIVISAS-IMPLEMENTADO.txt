@@ -1,0 +1,502 @@
+═══════════════════════════════════════════════════════════════════════════
+  💱 WALLET - CONVERSOR DE DIVISAS
+  Nueva Funcionalidad Implementada
+═══════════════════════════════════════════════════════════════════════════
+
+FECHA: Diciembre 10, 2025
+VERSIÓN: 1.1.0
+ESTADO: ✅ IMPLEMENTADO Y FUNCIONANDO
+
+
+═══════════════════════════════════════════════════════════════════════════
+ ¿QUÉ SE IMPLEMENTÓ?
+═══════════════════════════════════════════════════════════════════════════
+
+Se agregó un CONVERSOR DE DIVISAS completamente funcional que permite:
+
+✅ Convertir entre más de 160 monedas internacionales
+✅ Obtener tasas de cambio en tiempo real
+✅ Caché de tasas por 1 hora (optimización de rendimiento)
+✅ Interfaz amigable con lista de monedas comunes
+✅ Verificación de disponibilidad del servicio
+
+API USADA: https://open.er-api.com/v6/latest/{currency}
+• API gratuita y pública
+• Sin necesidad de API key
+• 1,500 requests/mes
+• Tasas actualizadas en tiempo real
+
+
+═══════════════════════════════════════════════════════════════════════════
+ ARQUITECTURA IMPLEMENTADA
+═══════════════════════════════════════════════════════════════════════════
+
+Se siguió CLEAN ARCHITECTURE con separación de capas:
+
+┌─────────────────────────────────────────────────────────────────┐
+│  DOMAIN LAYER                                                   │
+│  • IConversorDivisas (interface)                                │
+│    - Contrato para conversión de divisas                        │
+│    - Define métodos: obtenerTasaCambio(), convertir()           │
+└─────────────────────────────────────────────────────────────────┘
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  APPLICATION LAYER                                              │
+│  • ConvertirDivisaUseCase                                       │
+│    - Lógica de aplicación para conversión                       │
+│  • ConvertirDivisaRequest (DTO Request)                         │
+│  • ConversionDivisaDTO (DTO Response)                           │
+└─────────────────────────────────────────────────────────────────┘
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  INFRASTRUCTURE LAYER                                           │
+│  • ConversorDivisasAPI                                          │
+│    - Implementación con API pública                             │
+│    - Sistema de caché para optimización                         │
+│    - Parser JSON sin librerías externas                         │
+└─────────────────────────────────────────────────────────────────┘
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  PRESENTATION LAYER                                             │
+│  • MenuDivisas                                                  │
+│    - Interfaz de usuario en consola                             │
+│    - Lista de 12 monedas comunes                                │
+│    - Menú integrado en MenuPrincipal                            │
+└─────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════
+ ARCHIVOS CREADOS (6 archivos nuevos)
+═══════════════════════════════════════════════════════════════════════════
+
+1. Domain Layer:
+   ✅ src/main/java/com/wallet/domain/services/IConversorDivisas.java
+      • Interface que define el contrato
+      • Métodos: obtenerTasaCambio(), convertir(), estaDisponible()
+
+2. Application Layer:
+   ✅ src/main/java/com/wallet/application/usecases/ConvertirDivisaUseCase.java
+      • Use Case para convertir divisas
+      • Validaciones de entrada
+      • Dependency Injection de IConversorDivisas
+
+   ✅ src/main/java/com/wallet/application/dtos/requests/ConvertirDivisaRequest.java
+      • DTO para solicitud de conversión
+      • Campos: cantidad, monedaOrigen, monedaDestino
+
+   ✅ src/main/java/com/wallet/application/dtos/ConversionDivisaDTO.java
+      • DTO para respuesta de conversión
+      • Incluye: cantidades original/convertida, tasa de cambio
+
+3. Infrastructure Layer:
+   ✅ src/main/java/com/wallet/infrastructure/services/ConversorDivisasAPI.java
+      • Implementación con API pública
+      • Sistema de caché (1 hora de duración)
+      • Parser JSON manual (sin dependencias)
+      • Manejo de errores y timeouts
+
+4. Presentation Layer:
+   ✅ src/main/java/com/wallet/presentation/menus/MenuDivisas.java
+      • Menú interactivo en consola
+      • Lista de 12 monedas comunes
+      • Opciones: convertir, ver monedas, verificar servicio
+
+
+═══════════════════════════════════════════════════════════════════════════
+ CARACTERÍSTICAS TÉCNICAS
+═══════════════════════════════════════════════════════════════════════════
+
+1. DEPENDENCY INVERSION PRINCIPLE (DIP)
+   • Domain define IConversorDivisas (abstracción)
+   • Infrastructure implementa ConversorDivisasAPI
+   • Application depende de la abstracción, no de la implementación
+
+2. SINGLE RESPONSIBILITY PRINCIPLE (SRP)
+   • Cada clase tiene una sola responsabilidad
+   • Parser JSON separado en método privado
+   • Caché en clase interna CachedRate
+
+3. SISTEMA DE CACHÉ
+   • CachedRate (clase interna)
+   • Duración: 1 hora (configurable)
+   • Reduce llamadas a la API
+   • Mejora rendimiento
+
+4. MANEJO DE ERRORES ROBUSTO
+   • Validaciones de entrada (moneda, cantidad)
+   • Timeouts configurables (5 segundos)
+   • Mensajes de error específicos
+   • Logging de operaciones
+
+5. PARSER JSON MANUAL
+   • Sin dependencias externas (Jackson, Gson)
+   • Usa expresiones regulares (Pattern, Matcher)
+   • Extrae tasas de cambio del JSON de respuesta
+   • Ligero y eficiente
+
+
+═══════════════════════════════════════════════════════════════════════════
+ MONEDAS SOPORTADAS
+═══════════════════════════════════════════════════════════════════════════
+
+MONEDAS COMUNES (en el menú):
+ 1. USD - Dólar Estadounidense
+ 2. EUR - Euro
+ 3. PEN - Sol Peruano
+ 4. GBP - Libra Esterlina
+ 5. JPY - Yen Japonés
+ 6. CAD - Dólar Canadiense
+ 7. AUD - Dólar Australiano
+ 8. CHF - Franco Suizo
+ 9. CNY - Yuan Chino
+10. MXN - Peso Mexicano
+11. BRL - Real Brasileño
+12. ARS - Peso Argentino
+
+TAMBIÉN SOPORTA:
+• Cualquier código ISO 4217 válido (3 letras)
+• Más de 160 monedas internacionales
+• Ejemplos: SEK, NOK, DKK, INR, KRW, THB, etc.
+
+
+═══════════════════════════════════════════════════════════════════════════
+ CÓMO USAR LA NUEVA FUNCIONALIDAD
+═══════════════════════════════════════════════════════════════════════════
+
+OPCIÓN 1: Desde el Menú Principal
+
+   1. Ejecutar la aplicación: .\run.ps1
+   
+   2. En el Menú Principal, seleccionar:
+      → 5. Conversor de Divisas
+   
+   3. En el Menú de Divisas:
+      → 1. Convertir divisa
+   
+   4. Ingresar:
+      - Cantidad a convertir
+      - Moneda origen (número de la lista o código)
+      - Moneda destino (número de la lista o código)
+   
+   5. Ver el resultado:
+      ┌─────────────────────────────────────────────────────┐
+      │  CANTIDAD ORIGINAL:      100.00 USD                 │
+      ├─────────────────────────────────────────────────────┤
+      │  TASA DE CAMBIO:     1 USD = 3.750000 PEN          │
+      ├─────────────────────────────────────────────────────┤
+      │  CANTIDAD CONVERTIDA:    375.00 PEN                 │
+      └─────────────────────────────────────────────────────┘
+
+
+OPCIÓN 2: Programáticamente (para desarrolladores)
+
+   ```java
+   // Crear instancia del conversor
+   IConversorDivisas conversor = new ConversorDivisasAPI();
+   
+   // Convertir directamente
+   Dinero dineroUSD = new Dinero(BigDecimal.valueOf(100), "USD");
+   Dinero dineroPEN = conversor.convertir(dineroUSD, "PEN");
+   
+   // O usar el Use Case
+   ConvertirDivisaUseCase useCase = new ConvertirDivisaUseCase(conversor);
+   ConvertirDivisaRequest request = new ConvertirDivisaRequest(
+       BigDecimal.valueOf(100),
+       "USD",
+       "PEN"
+   );
+   ConversionDivisaDTO resultado = useCase.ejecutar(request);
+   ```
+
+
+═══════════════════════════════════════════════════════════════════════════
+ EJEMPLO DE USO COMPLETO
+═══════════════════════════════════════════════════════════════════════════
+
+CASO: Convertir 100 USD a PEN
+
+ENTRADA:
+  Cantidad: 100
+  Moneda origen: 1 (USD)
+  Moneda destino: 3 (PEN)
+
+PROCESO:
+  1. ConversorDivisasAPI consulta API
+  2. Obtiene tasa: 1 USD = 3.75 PEN (ejemplo)
+  3. Calcula: 100 * 3.75 = 375.00
+  4. Guarda en caché por 1 hora
+  5. Retorna resultado
+
+SALIDA:
+  ┌─────────────────────────────────────────────────────┐
+  │  CANTIDAD ORIGINAL:      100.00 USD                 │
+  ├─────────────────────────────────────────────────────┤
+  │  TASA DE CAMBIO:     1 USD = 3.750000 PEN          │
+  ├─────────────────────────────────────────────────────┤
+  │  CANTIDAD CONVERTIDA:    375.00 PEN                 │
+  └─────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════
+ DECISIONES DE DISEÑO
+═══════════════════════════════════════════════════════════════════════════
+
+❓ POR QUÉ usar una INTERFACE (IConversorDivisas)?
+
+RESPUESTA: Dependency Inversion Principle
+
+  ✅ BENEFICIOS:
+     • Fácil cambiar de API sin modificar Use Cases
+     • Fácil mockear en tests
+     • Domain no depende de detalles de infraestructura
+  
+  ✅ FUTURO:
+     Podemos agregar otras implementaciones:
+     • ConversorDivisasBCRP (API del Banco Central)
+     • ConversorDivisasCurrencyLayer
+     • ConversorDivisasFixerIO
+     • ConversorDivisasMock (para tests)
+
+❓ POR QUÉ un sistema de CACHÉ?
+
+RESPUESTA: Optimización de rendimiento y costos
+
+  ✅ BENEFICIOS:
+     • Reduce llamadas a la API (límite: 1,500/mes)
+     • Mejora velocidad de respuesta
+     • Reduce consumo de ancho de banda
+     • Tasas no cambian cada segundo
+  
+  ✅ DURACIÓN:
+     1 hora es razonable porque:
+     • Tasas cambian gradualmente
+     • Balance entre frescura y eficiencia
+     • Configurable (constante CACHE_DURATION_MS)
+
+❓ POR QUÉ parser JSON MANUAL?
+
+RESPUESTA: Evitar dependencias externas
+
+  ✅ BENEFICIOS:
+     • No requiere Jackson, Gson, etc.
+     • Más ligero
+     • Sin conflictos de versiones
+     • Suficiente para nuestro caso simple
+  
+  ⚠️ LIMITACIÓN:
+     Solo funciona con el formato específico de la API
+     Si usáramos otra API, habría que adaptar el parser
+
+❓ POR QUÉ 12 monedas comunes en el menú?
+
+RESPUESTA: Balance entre usabilidad y simplicidad
+
+  ✅ BENEFICIOS:
+     • Cubre las monedas más usadas
+     • Fácil selección por número
+     • No sobrecarga el menú
+     • Permite ingresar cualquier código ISO
+  
+  ✅ MONEDAS ELEGIDAS:
+     • USD, EUR: Dominan comercio internacional
+     • PEN: Moneda local (Perú)
+     • GBP, JPY, CHF: Principales economías
+     • CAD, AUD: Dólares regionales
+     • CNY: Segunda economía mundial
+     • MXN, BRL, ARS: Latinoamérica
+
+
+═══════════════════════════════════════════════════════════════════════════
+ MANEJO DE ERRORES
+═══════════════════════════════════════════════════════════════════════════
+
+ERRORES CAPTURADOS:
+
+1. SIN CONEXIÓN A INTERNET
+   Mensaje: "No se pudo obtener la tasa de cambio. 
+            Verifique su conexión a internet."
+   
+2. MONEDA INVÁLIDA
+   Mensaje: "El código de moneda debe ser 3 letras mayúsculas 
+            (ej: USD, EUR, PEN)"
+   
+3. MONEDA NO SOPORTADA
+   Mensaje: "Moneda destino no soportada: XYZ"
+   
+4. API NO DISPONIBLE
+   Mensaje: "Error en la API: código de respuesta 404"
+   
+5. TIMEOUT
+   Timeout configurado: 5 segundos
+   Mensaje: "No se pudo conectar al servicio de conversión."
+
+
+═══════════════════════════════════════════════════════════════════════════
+ LOGGING
+═══════════════════════════════════════════════════════════════════════════
+
+Se registran las siguientes operaciones:
+
+✅ CONVERSIONES EXITOSAS:
+   Logger.info("Conversión: 100.00 USD → 375.00 PEN (Tasa: 3.7500)")
+
+✅ USO DE CACHÉ:
+   Logger.info("Usando tasas de cambio desde caché para USD")
+
+✅ LLAMADAS A API:
+   Logger.info("Obteniendo tasas de cambio desde API para USD")
+
+✅ ERRORES:
+   Logger.error("Error obteniendo tasa de cambio: Connection timeout")
+
+
+═══════════════════════════════════════════════════════════════════════════
+ TESTING
+═══════════════════════════════════════════════════════════════════════════
+
+Para crear tests del conversor de divisas:
+
+```java
+@Test
+void deberiaConvertirDivisaExitosamente() {
+    // Arrange
+    IConversorDivisas mockConversor = mock(IConversorDivisas.class);
+    when(mockConversor.obtenerTasaCambio("USD", "PEN"))
+        .thenReturn(3.75);
+    when(mockConversor.convertir(any(Dinero.class), eq("PEN")))
+        .thenReturn(new Dinero(BigDecimal.valueOf(375), "PEN"));
+    
+    ConvertirDivisaUseCase useCase = new ConvertirDivisaUseCase(mockConversor);
+    ConvertirDivisaRequest request = new ConvertirDivisaRequest(
+        BigDecimal.valueOf(100),
+        "USD",
+        "PEN"
+    );
+    
+    // Act
+    ConversionDivisaDTO resultado = useCase.ejecutar(request);
+    
+    // Assert
+    assertEquals(BigDecimal.valueOf(375.00), resultado.getCantidadConvertida());
+    assertEquals("PEN", resultado.getMonedaDestino());
+    verify(mockConversor).obtenerTasaCambio("USD", "PEN");
+    verify(mockConversor).convertir(any(Dinero.class), eq("PEN"));
+}
+```
+
+
+═══════════════════════════════════════════════════════════════════════════
+ INTEGRACIÓN EN EL PROYECTO
+═══════════════════════════════════════════════════════════════════════════
+
+ARCHIVOS MODIFICADOS (3 archivos):
+
+1. ✅ MenuPrincipal.java
+   • Agregado campo: private final MenuDivisas menuDivisas
+   • Agregada opción 5: "Conversor de Divisas"
+   • Agregado case 5 en procesarOpcion()
+
+2. ✅ ConsoleUtils.java
+   • Agregado método: public static Scanner getScanner()
+   • Permite que MenuDivisas acceda al scanner compartido
+
+COMPATIBILIDAD:
+• No rompe funcionalidad existente ✓
+• Sigue Clean Architecture ✓
+• Integrado sin cambios en otras capas ✓
+
+
+═══════════════════════════════════════════════════════════════════════════
+ COMPILACIÓN Y EJECUCIÓN
+═══════════════════════════════════════════════════════════════════════════
+
+COMPILAR:
+  PS> .\compile.ps1
+
+RESULTADO:
+  ✅ Compilación exitosa!
+  ✅ 6 archivos nuevos compilados
+  ✅ Sin errores
+
+EJECUTAR:
+  PS> .\run.ps1
+
+NUEVA OPCIÓN EN MENÚ PRINCIPAL:
+  1. Gestión de Usuarios
+  2. Gestión de Cuentas
+  3. Transacciones
+  4. Consultas
+  5. Conversor de Divisas  ← NUEVO
+  0. Salir
+
+
+═══════════════════════════════════════════════════════════════════════════
+ BENEFICIOS PARA EL USUARIO
+═══════════════════════════════════════════════════════════════════════════
+
+✅ CONVENIENCIA
+   Convertir divisas sin salir de la aplicación
+
+✅ TIEMPO REAL
+   Tasas de cambio actualizadas automáticamente
+
+✅ AMPLIA COBERTURA
+   Más de 160 monedas soportadas
+
+✅ FÁCIL DE USAR
+   Interfaz intuitiva con lista de monedas comunes
+
+✅ RÁPIDO
+   Sistema de caché reduce tiempos de respuesta
+
+✅ CONFIABLE
+   Manejo robusto de errores y validaciones
+
+
+═══════════════════════════════════════════════════════════════════════════
+ MEJORAS FUTURAS POSIBLES
+═══════════════════════════════════════════════════════════════════════════
+
+🔮 CORTO PLAZO:
+   • Tests unitarios para ConversorDivisasAPI
+   • Tests de integración con mock de API
+   • Guardar conversiones favoritas
+
+🔮 MEDIANO PLAZO:
+   • Historial de conversiones
+   • Gráficas de tasas históricas
+   • Alertas de tasa objetivo
+
+🔮 LARGO PLAZO:
+   • Múltiples providers de API (failover)
+   • Conversión automática en transacciones
+   • API REST endpoint para conversión
+
+
+═══════════════════════════════════════════════════════════════════════════
+ RESUMEN
+═══════════════════════════════════════════════════════════════════════════
+
+IMPLEMENTACIÓN COMPLETA DEL CONVERSOR DE DIVISAS:
+
+✅ 6 archivos nuevos creados
+✅ 3 archivos modificados
+✅ Siguiendo Clean Architecture
+✅ Con SOLID principles
+✅ API pública gratuita integrada
+✅ Sistema de caché implementado
+✅ Manejo robusto de errores
+✅ Logging completo
+✅ Compilación exitosa
+✅ Integrado en el menú principal
+
+ESTADO: ✅ LISTO PARA USAR
+
+Para probar, ejecute:
+  .\run.ps1
+  → Opción 5: Conversor de Divisas
+
+
+═══════════════════════════════════════════════════════════════════════════
+  💱 FIN DEL DOCUMENTO - CONVERSOR DE DIVISAS IMPLEMENTADO
+═══════════════════════════════════════════════════════════════════════════

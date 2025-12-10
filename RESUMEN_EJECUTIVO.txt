@@ -700,61 +700,167 @@ POR QUÉ 8 USE CASES:
 
 
 ┌─────────────────────────────────────────────────────────────────┐
-│ DECISIÓN 4: REPOSITORY PATTERN CON INTERFACES                  │
+│ DECISIÓN 4: INTERFACES VS CLASES ABSTRACTAS                    │
 └─────────────────────────────────────────────────────────────────┘
 
-❓ POR QUÉ interfaces IUsuarioRepository en Domain y 
-   implementación en Infrastructure?
+❓ POR QUÉ usamos INTERFACES en lugar de CLASES ABSTRACTAS?
 
-SIN ABSTRACCIÓN (Lo que NO hicimos):
+NUESTRO PROYECTO USA:
+  ✅ Interfaces para todos los contratos (IUsuarioRepository, etc.)
+  ❌ NO usamos clases abstractas
+
+COMPARACIÓN:
+
+  CLASE ABSTRACTA (Lo que NO hicimos):
   ```java
-  // ❌ Acoplamiento directo a implementación
-  class CrearUsuarioUseCase {
-      private UsuarioRepositoryInMemory repository; // ¡Acoplado!
+  // ❌ Con clases abstractas
+  abstract class RepositorioBase<T> {
+      protected Map<String, T> storage = new ConcurrentHashMap<>();
       
-      void ejecutar() {
-          repository.guardar(usuario); // Imposible cambiar DB
+      public T guardar(T entidad) {
+          // Implementación compartida
+          storage.put(getId(entidad), entidad);
+          return entidad;
+      }
+      
+      protected abstract String getId(T entidad);
+  }
+  
+  class UsuarioRepository extends RepositorioBase<Usuario> {
+      protected String getId(Usuario usuario) {
+          return usuario.getId();
       }
   }
   ```
+  
+  PROBLEMAS:
+  ❌ Herencia (acoplamiento fuerte)
+  ❌ Java no permite herencia múltiple
+  ❌ Dificulta testing (métodos concretos heredados)
+  ❌ Rompe Dependency Inversion (detalle concreto)
 
-CON ABSTRACCIÓN (Lo que SÍ hicimos):
+  INTERFACE (Lo que SÍ hicimos):
   ```java
-  // Domain Layer
-  interface IUsuarioRepository {
+  // ✅ Con interfaces
+  public interface IUsuarioRepository {
       Usuario guardar(Usuario usuario);
       Optional<Usuario> buscarPorId(String id);
+      Optional<Usuario> buscarPorEmail(Email email);
+      boolean existePorEmail(Email email);
+      List<Usuario> obtenerTodos();
   }
   
-  // Application Layer
-  class CrearUsuarioUseCase {
-      private final IUsuarioRepository repository; // ¡Interfaz!
+  public class UsuarioRepositoryInMemory implements IUsuarioRepository {
+      private final Map<String, Usuario> usuarios = new ConcurrentHashMap<>();
       
-      CrearUsuarioUseCase(IUsuarioRepository repository) {
-          this.repository = repository;
+      @Override
+      public Usuario guardar(Usuario usuario) {
+          usuarios.put(usuario.getId(), usuario);
+          return usuario;
       }
+      
+      @Override
+      public Optional<Usuario> buscarPorId(String id) {
+          return Optional.ofNullable(usuarios.get(id));
+      }
+      // ... implementación completa
   }
+  ```
   
-  // Infrastructure Layer
-  class UsuarioRepositoryInMemory implements IUsuarioRepository {
-      // Implementación concreta
-  }
-  ```
+  BENEFICIOS:
+  ✅ Contrato puro (sin implementación)
+  ✅ Múltiples implementaciones posibles
+  ✅ Fácil mockear (Mockito)
+  ✅ Dependency Inversion Principle
+  ✅ Composición sobre herencia
 
-BENEFICIOS OBTENIDOS:
-  ✅ Dependency Inversion Principle aplicado
-  ✅ Domain no depende de Infrastructure
-  ✅ Fácil cambiar de In-Memory a PostgreSQL
-  ✅ Fácil mockear en tests (Mockito)
-  ✅ Testeable sin base de datos real
+CUÁNDO USAR CADA UNO:
 
-CAMBIO FUTURO FÁCIL:
+  INTERFACES (lo que usamos):
+  ✅ Definir contratos puros
+  ✅ Cuando NO hay comportamiento compartido
+  ✅ Para cumplir Dependency Inversion
+  ✅ Cuando se necesita múltiple herencia
+  ✅ Para testing con mocks
+  
+  Ejemplos en nuestro proyecto:
+  • IUsuarioRepository (contrato de persistencia)
+  • ICuentaRepository (contrato de persistencia)
+  • ITransaccionRepository (contrato de persistencia)
+
+  CLASES ABSTRACTAS (no las usamos):
+  ⚠️  Compartir código entre subclases
+  ⚠️  Comportamiento por defecto + personalización
+  ⚠️  Template Method Pattern
+  ⚠️  Cuando hay estado compartido
+  
+  Ejemplo hipotético (NO en nuestro proyecto):
   ```java
-  // Agregar PostgreSQL sin modificar Use Cases
-  class UsuarioRepositoryPostgreSQL implements IUsuarioRepository {
-      // Nueva implementación
+  abstract class Transaccion {
+      protected final Dinero monto;
+      protected final LocalDateTime fecha;
+      
+      // Método template (comportamiento común)
+      public final void ejecutar() {
+          validar();      // común
+          procesar();     // específico (abstracto)
+          registrar();    // común
+      }
+      
+      protected abstract void procesar(); // cada subclase implementa
+      
+      private void validar() { /* común */ }
+      private void registrar() { /* común */ }
   }
   ```
+
+POR QUÉ ELEGIMOS INTERFACES:
+
+  1. DEPENDENCY INVERSION PRINCIPLE
+     Domain → Interface ← Infrastructure
+     
+     Use Cases dependen de IRepository (abstracción)
+     NO dependen de RepositoryInMemory (implementación)
+
+  2. FLEXIBILIDAD
+     ```java
+     // Múltiples implementaciones sin cambiar Use Cases
+     class UsuarioRepositoryInMemory implements IUsuarioRepository {...}
+     class UsuarioRepositoryPostgreSQL implements IUsuarioRepository {...}
+     class UsuarioRepositoryMongoDB implements IUsuarioRepository {...}
+     class UsuarioRepositoryRedis implements IUsuarioRepository {...}
+     ```
+
+  3. TESTING
+     ```java
+     // Mockito funciona perfecto con interfaces
+     IUsuarioRepository mockRepo = mock(IUsuarioRepository.class);
+     when(mockRepo.buscarPorId(any())).thenReturn(Optional.of(usuario));
+     
+     // Use Case recibe el mock
+     CrearUsuarioUseCase useCase = new CrearUsuarioUseCase(mockRepo);
+     ```
+
+  4. CLARIDAD
+     Interfaz = Contrato puro (qué hace)
+     Implementación = Detalles (cómo lo hace)
+     
+     Separación clara de responsabilidades
+
+  5. NO HAY COMPORTAMIENTO COMPARTIDO
+     Cada implementación es completamente diferente:
+     • InMemory usa ConcurrentHashMap
+     • PostgreSQL usaría JDBC
+     • MongoDB usaría Mongo Driver
+     
+     No hay código común para heredar
+
+REGLA GENERAL EN CLEAN ARCHITECTURE:
+  "Program to an interface, not an implementation"
+  
+  Domain define interfaces (contratos)
+  Infrastructure implementa interfaces (detalles)
+  Application usa interfaces (desacoplado)
 
 
 ┌─────────────────────────────────────────────────────────────────┐

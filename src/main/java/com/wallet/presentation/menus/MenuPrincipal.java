@@ -20,6 +20,7 @@ public class MenuPrincipal {
     private final MenuUsuarios menuUsuarios;
     private final MenuCuentas menuCuentas;
     private final MenuTransacciones menuTransacciones;
+    private final MenuDivisas menuDivisas;
     
     private boolean salir = false;
     
@@ -38,6 +39,7 @@ public class MenuPrincipal {
         this.menuUsuarios = new MenuUsuarios(usuarioController);
         this.menuCuentas = new MenuCuentas(cuentaController);
         this.menuTransacciones = new MenuTransacciones(transaccionController);
+        this.menuDivisas = new MenuDivisas(ConsoleUtils.getScanner());
     }
     
     /**
@@ -73,12 +75,13 @@ public class MenuPrincipal {
         System.out.println("2. Gestion de Cuentas");
         System.out.println("3. Transacciones");
         System.out.println("4. Consultas");
+        System.out.println("5. Conversor de Divisas");
         System.out.println("0. Salir");
         ConsoleUtils.printLine();
     }
     
     private void procesarOpcion() {
-        int opcion = ConsoleUtils.readIntInRange("Seleccione una opcion: ", 0, 4);
+        int opcion = ConsoleUtils.readIntInRange("Seleccione una opcion: ", 0, 5);
         ConsoleUtils.printLine();
         
         switch (opcion) {
@@ -93,6 +96,9 @@ public class MenuPrincipal {
                 break;
             case 4:
                 mostrarMenuConsultas();
+                break;
+            case 5:
+                menuDivisas.mostrar();
                 break;
             case 0:
                 salir = true;
