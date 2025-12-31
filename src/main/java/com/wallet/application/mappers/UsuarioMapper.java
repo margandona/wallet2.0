@@ -5,9 +5,17 @@ import com.wallet.domain.entities.Usuario;
 import com.wallet.domain.valueobjects.DocumentoIdentidad;
 import com.wallet.domain.valueobjects.Email;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Mapper para convertir entre Usuario (Entidad) y UsuarioDTO.
  * Implementa el patrón Mapper para separar capas.
+ * 
+ * Responsabilidades:
+ * - Convertir Domain Entity (Usuario) ↔ DTO (UsuarioDTO)
+ * - Manejar conversión de Value Objects
+ * - Proporcionar métodos estáticos para facilitar uso
  * 
  * @author Wallet Team
  * @version 1.0.0
@@ -86,5 +94,37 @@ public class UsuarioMapper {
         );
         
         return new Usuario(nombre, apellido, emailVO, documentoVO);
+    }
+
+    /**
+     * Convierte una lista de Usuarios a lista de UsuarioDTOs.
+     *
+     * @param usuarios lista de entidades Usuario
+     * @return lista de DTOs
+     */
+    public static List<UsuarioDTO> toDTOList(List<Usuario> usuarios) {
+        List<UsuarioDTO> dtos = new ArrayList<>();
+        if (usuarios != null) {
+            for (Usuario usuario : usuarios) {
+                dtos.add(toDTO(usuario));
+            }
+        }
+        return dtos;
+    }
+
+    /**
+     * Convierte una lista de UsuarioDTOs a lista de Usuarios.
+     *
+     * @param dtos lista de DTOs
+     * @return lista de entidades Usuario
+     */
+    public static List<Usuario> toEntityList(List<UsuarioDTO> dtos) {
+        List<Usuario> usuarios = new ArrayList<>();
+        if (dtos != null) {
+            for (UsuarioDTO dto : dtos) {
+                usuarios.add(toEntity(dto));
+            }
+        }
+        return usuarios;
     }
 }

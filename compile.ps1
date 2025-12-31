@@ -1,32 +1,34 @@
 # Script de compilación para Windows (PowerShell)
-# Compila el proyecto Wallet sin necesidad de Maven
+# Compila el proyecto Wallet usando Maven
 
 Write-Host "Compilando Proyecto Wallet..." -ForegroundColor Cyan
 Write-Host ""
 
-# Limpiar directorio target
-if (Test-Path "target") {
-    Write-Host "Limpiando directorio target..." -ForegroundColor Yellow
-    Remove-Item -Recurse -Force "target"
+# Intentar encontrar Maven
+$mvnPath = Get-Command mvn -ErrorAction SilentlyContinue
+if (-not $mvnPath) {
+    # Buscar en MAVEN_HOME
+    if (Test-Path env:MAVEN_HOME) {
+        $mvnExe = Join-Path $env:MAVEN_HOME "bin\mvn.cmd"
+        if (Test-Path $mvnExe) {
+            Write-Host "Maven encontrado en MAVEN_HOME" -ForegroundColor Green
+            & $mvnExe clean compile
+        } else {
+            Write-Host "Maven no encontrado en MAVEN_HOME" -ForegroundColor Red
+            exit 1
+        }
+    } else {
+        Write-Host "Maven no está instalado o no está en el PATH" -ForegroundColor Red
+        Write-Host "Por favor instala Maven o configura MAVEN_HOME" -ForegroundColor Yellow
+        exit 1
+    }
+} else {
+    Write-Host "Usando Maven: $($mvnPath.Source)" -ForegroundColor Green
+    mvn clean compile
 }
-
-# Crear directorios
-Write-Host "Creando estructura de directorios..." -ForegroundColor Yellow
-New-Item -ItemType Directory -Force -Path "target\classes" | Out-Null
-New-Item -ItemType Directory -Force -Path "target\test-classes" | Out-Null
-
-# Compilar código fuente
-Write-Host "Compilando codigo fuente..." -ForegroundColor Yellow
-$sourceFiles = Get-ChildItem -Path "src\main\java" -Filter "*.java" -Recurse | Select-Object -ExpandProperty FullName
-
-if ($sourceFiles.Count -eq 0) {
-    Write-Host "No se encontraron archivos Java para compilar" -ForegroundColor Red
-    exit 1
-}
-
-javac -d target\classes -encoding UTF-8 $sourceFiles
 
 if ($LASTEXITCODE -eq 0) {
+    Write-Host ""
     Write-Host "Compilacion exitosa!" -ForegroundColor Green
     Write-Host ""
     Write-Host "Archivos compilados en: target\classes" -ForegroundColor Green
@@ -34,6 +36,7 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Para ejecutar la aplicacion, usa:" -ForegroundColor Cyan
     Write-Host "   .\run.ps1" -ForegroundColor White
 } else {
+    Write-Host ""
     Write-Host "Error en la compilacion" -ForegroundColor Red
     exit 1
 }

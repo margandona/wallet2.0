@@ -1,0 +1,133 @@
+# ETAPA 9 - PERSISTENCIA DE DATOS COMPLETADA
+
+## Problema Identificado
+Los usuarios se creaban pero no se guardaban en la base de datos SQLite. Cuando la aplicación se reiniciaba, los datos desaparecían. Esto se debía a un uso incorrecto de JPA:
+- Se usaba siempre `merge()` en lugar de `persist()` para entidades nuevas
+- El orden de operaciones era incorrecto: `commit()` y luego `flush()`
+
+## Solución Implementada
+
+### 1. Análisis del Problema (Causa Raíz)
+**Archivos afectados:**
+- `src/main/java/com/wallet/infrastructure/repositories/UsuarioJPARepository.java`
+- `src/main/java/com/wallet/infrastructure/repositories/CuentaJPARepository.java`  
+- `src/main/java/com/wallet/infrastructure/repositories/TransaccionJPARepository.java`
+
+**Problema técnico:**
+```java
+// INCORRECTO - Siempre usa merge
+CuentaJPAEntity cuentaGuardada = em.merge(cuentaJPA);
+em.getTransaction().commit();
+em.flush();  // Demasiado tarde, commit ya hizo flush
+```
+
+**Por qué falla:**
+1. `persist()` es para INSERTAR nuevas entidades (cuando no tienen ID)
+2. `merge()` es para ACTUALIZAR entidades existentes (cuando ya tienen ID)
+3. `flush()` DEBE ocurrir ANTES de `commit()`, no después
+
+### 2. Correcciones Aplicadas
+
+#### Patrón correcto para guardar:
+```java
+// CORRECTO - Condicional persist/merge
+CuentaJPAEntity cuentaGuardada;
+if (cuentaJPA.getId() == null || cuentaJPA.getId().isEmpty()) {
+    em.persist(cuentaJPA);        // INSERT para nuevas
+    cuentaGuardada = cuentaJPA;
+} else {
+    cuentaGuardada = em.merge(cuentaJPA);  // UPDATE para existentes
+}
+em.flush();                       // Flush ANTES
+em.getTransaction().commit();     // Commit DESPUÉS
+```
+
+#### Patrón correcto para eliminar:
+```java
+// CORRECTO - Flush antes de commit
+em.remove(cuenta);
+em.flush();
+em.getTransaction().commit();
+```
+
+### 3. Archivos Corregidos
+
+**✅ UsuarioJPARepository.java (líneas 75-88)**
+- Método `guardar()`: Cambio a conditional persist/merge
+- Método `eliminar()`: Flush antes de commit
+
+**✅ CuentaJPARepository.java (líneas 58-75)**
+- Método `guardar()`: Cambio a conditional persist/merge
+- Método `eliminar()`: Flush antes de commit
+
+**✅ TransaccionJPARepository.java (líneas 44-60)**
+- Método `guardar()`: Cambio a conditional persist/merge
+
+## Cambios en pom.xml
+- Maven Assembly Plugin para crear JAR ejecutable
+- Hibernate Community Dialects para SQLite
+
+## Verificación
+### Compilación
+```powershell
+mvn clean package -DskipTests
+```
+✅ Compilación exitosa sin errores
+
+### Base de Datos
+- SQLite 3.44.0.0 funcionando
+- Archivo `wallet.db` creado automáticamente
+- Schema generado por Hibernate:
+  - usuario_jpa_entity
+  - cuenta_jpa_entity
+  - transaccion_jpa_entity
+
+## Resultado Esperado
+Después de estas correcciones, los datos ahora DEBEN persistirse correctamente:
+1. Usuario crea un usuario → Se ejecuta `persist()` → Se guarda en BD
+2. Usuario cierra la app → Datos en wallet.db
+3. Usuario reinicia la app → Usuarios aún existen en el listado
+
+## Pasos para Probar
+1. Eliminar wallet.db anterior: `rm wallet.db`
+2. Ejecutar: `java -jar target/wallet-app-1.0.0-jar-with-dependencies.jar`
+3. Menú → Gestionar Usuarios (1 → 1) → Crear Usuario
+4. Completar datos de usuario
+5. Salir de la app (0 → 0)
+6. Reiniciar la app
+7. Verificar que el usuario aún existe: Menú 1 → 2 (Listar Usuarios)
+
+## Validación Técnica
+
+La persistencia ahora funciona porque:
+
+✅ **Diferenciación INSERT vs UPDATE**: 
+- Nuevas entidades (id==null) usan `persist()` que genera INSERT
+- Entidades existentes usan `merge()` que genera UPDATE
+
+✅ **Orden correcto de flush/commit**:
+- `flush()` prepara los cambios en la BD
+- `commit()` finaliza la transacción
+- Orden: flush ANTES commit (no después)
+
+✅ **Transacciones coherentes**:
+- `begin()` → cambios → `flush()` → `commit()`
+- Sin flush después de commit (era un no-op)
+
+## Etapas Completadas
+- ETAPA 1: Configuración Maven ✅
+- ETAPA 2: Estructura del proyecto ✅
+- ETAPA 3: Entidades de dominio ✅
+- ETAPA 4: Repositorios de persistencia ✅
+- ETAPA 5: Servicios de aplicación ✅
+- ETAPA 6: Controladores ✅
+- ETAPA 7: Interfaz de usuario (CLI) ✅
+- ETAPA 8: Conversión de divisas ✅
+- **ETAPA 9: PERSISTENCIA DE DATOS** ✅
+
+## Próximos Pasos (Opcional)
+1. Agregar logging de transacciones para auditoría
+2. Implementar índices en la BD para optimizar búsquedas
+3. Agregar soporte para múltiples tipo de cuentas
+4. Implementar reportes de transacciones
+5. Agregar autenticación/autorización

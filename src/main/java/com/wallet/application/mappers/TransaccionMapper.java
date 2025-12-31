@@ -5,8 +5,16 @@ import com.wallet.domain.entities.Transaccion;
 import com.wallet.domain.valueobjects.Dinero;
 import com.wallet.domain.valueobjects.TipoTransaccion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Mapper para convertir entre Transaccion (Entidad) y TransaccionDTO.
+ * 
+ * Responsabilidades:
+ * - Convertir Domain Entity (Transaccion) ↔ DTO (TransaccionDTO)
+ * - Manejar conversión de Value Objects (Dinero, TipoTransaccion)
+ * - Proporcionar métodos estáticos para facilitar uso
  * 
  * @author Wallet Team
  * @version 1.0.0
@@ -61,5 +69,37 @@ public class TransaccionMapper {
             Dinero.CERO,
             monto
         );
+    }
+
+    /**
+     * Convierte una lista de Transacciones a lista de TransaccionDTOs.
+     *
+     * @param transacciones lista de entidades Transaccion
+     * @return lista de DTOs
+     */
+    public static List<TransaccionDTO> toDTOList(List<Transaccion> transacciones) {
+        List<TransaccionDTO> dtos = new ArrayList<>();
+        if (transacciones != null) {
+            for (Transaccion transaccion : transacciones) {
+                dtos.add(toDTO(transaccion));
+            }
+        }
+        return dtos;
+    }
+
+    /**
+     * Convierte una lista de TransaccionDTOs a lista de Transacciones.
+     *
+     * @param dtos lista de DTOs
+     * @return lista de entidades Transaccion
+     */
+    public static List<Transaccion> toEntityList(List<TransaccionDTO> dtos) {
+        List<Transaccion> transacciones = new ArrayList<>();
+        if (dtos != null) {
+            for (TransaccionDTO dto : dtos) {
+                transacciones.add(toEntity(dto));
+            }
+        }
+        return transacciones;
     }
 }

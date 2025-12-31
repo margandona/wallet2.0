@@ -18,20 +18,40 @@ public class MenuDivisas {
     private final Scanner scanner;
     private final ConvertirDivisaUseCase convertirDivisaUseCase;
     
-    // Monedas más comunes
+    // Monedas - Principales del mundo + Latinoamérica
     private static final String[][] MONEDAS_COMUNES = {
+        // Principales mundiales
         {"USD", "Dólar Estadounidense"},
         {"EUR", "Euro"},
-        {"PEN", "Sol Peruano"},
         {"GBP", "Libra Esterlina"},
         {"JPY", "Yen Japonés"},
-        {"CAD", "Dólar Canadiense"},
-        {"AUD", "Dólar Australiano"},
         {"CHF", "Franco Suizo"},
         {"CNY", "Yuan Chino"},
+        {"SGD", "Dólar Singapur"},
+        {"HKD", "Dólar Hong Kong"},
+        {"AUD", "Dólar Australiano"},
+        {"CAD", "Dólar Canadiense"},
+        {"NZD", "Dólar Nueva Zelanda"},
+        {"INR", "Rupia India"},
+        {"KRW", "Won Coreano"},
+        {"AED", "Dirham EAU"},
+        {"ZAR", "Rand Sudáfrica"},
+        
+        // Latinoamérica - Principales
         {"MXN", "Peso Mexicano"},
         {"BRL", "Real Brasileño"},
-        {"ARS", "Peso Argentino"}
+        {"PEN", "Sol Peruano"},
+        {"CLP", "Peso Chileno"},
+        {"COP", "Peso Colombiano"},
+        {"ARS", "Peso Argentino"},
+        {"UYU", "Peso Uruguayo"},
+        {"PYG", "Guaraní Paraguayo"},
+        {"BOB", "Boliviano"},
+        {"VES", "Bolívar Venezolano"},
+        {"GTQ", "Quetzal Guatemalteco"},
+        {"HNL", "Lempira Hondureño"},
+        {"CRC", "Colón Costarricense"},
+        {"PAN", "Balboa Panameño"}
     };
     
     public MenuDivisas(Scanner scanner) {

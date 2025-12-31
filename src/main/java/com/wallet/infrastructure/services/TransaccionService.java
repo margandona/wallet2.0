@@ -10,6 +10,7 @@ import com.wallet.domain.valueobjects.TipoTransaccion;
 import com.wallet.infrastructure.factories.RepositoryFactory;
 import com.wallet.infrastructure.logging.Logger;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,50 @@ public class TransaccionService {
                    " a " + request.getCuentaDestinoId());
         
         try {
+            List<TransaccionDTO> transacciones = transferirDineroUseCase.ejecutar(request);
+            Logger.info("Transferencia exitosa.");
+            return transacciones;
+        } catch (Exception e) {
+            Logger.error("Error al transferir dinero", e);
+            throw e;
+        }
+    }
+    
+    /**
+     * Transfiere dinero entre cuentas usando números de cuenta.
+     * Busca ambas cuentas por número y luego ejecuta la transferencia.
+     */
+    public List<TransaccionDTO> transferirPorNumero(String numeroCuentaOrigen, 
+                                                     String numeroCuentaDestino,
+                                                     BigDecimal monto, 
+                                                     String descripcion) {
+        Logger.info("Transfiriendo $" + monto + 
+                   " de cuenta " + numeroCuentaOrigen + 
+                   " a cuenta " + numeroCuentaDestino);
+        
+        try {
+            // Buscar cuenta origen
+            var cuentaOrigen = RepositoryFactory.getCuentaRepository()
+                .buscarPorNumeroCuenta(numeroCuentaOrigen)
+                .orElseThrow(() -> new IllegalArgumentException(
+                    "Cuenta origen no encontrada: " + numeroCuentaOrigen
+                ));
+            
+            // Buscar cuenta destino
+            var cuentaDestino = RepositoryFactory.getCuentaRepository()
+                .buscarPorNumeroCuenta(numeroCuentaDestino)
+                .orElseThrow(() -> new IllegalArgumentException(
+                    "Cuenta destino no encontrada: " + numeroCuentaDestino
+                ));
+            
+            // Crear request con IDs de las cuentas encontradas
+            TransferirDineroRequest request = new TransferirDineroRequest(
+                cuentaOrigen.getId(), 
+                cuentaDestino.getId(), 
+                monto, 
+                descripcion
+            );
+            
             List<TransaccionDTO> transacciones = transferirDineroUseCase.ejecutar(request);
             Logger.info("Transferencia exitosa.");
             return transacciones;

@@ -5,9 +5,16 @@ import com.wallet.domain.entities.Cuenta;
 import com.wallet.domain.valueobjects.Dinero;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Mapper para convertir entre Cuenta (Entidad) y CuentaDTO.
+ * 
+ * Responsabilidades:
+ * - Convertir Domain Entity (Cuenta) ↔ DTO (CuentaDTO)
+ * - Manejar conversión de Value Objects (Dinero)
+ * - Proporcionar métodos estáticos para facilitar uso
  * 
  * @author Wallet Team
  * @version 1.0.0
@@ -69,5 +76,37 @@ public class CuentaMapper {
      */
     public static Cuenta crearCuenta(String usuarioId) {
         return new Cuenta(usuarioId);
+    }
+
+    /**
+     * Convierte una lista de Cuentas a lista de CuentaDTOs.
+     *
+     * @param cuentas lista de entidades Cuenta
+     * @return lista de DTOs
+     */
+    public static List<CuentaDTO> toDTOList(List<Cuenta> cuentas) {
+        List<CuentaDTO> dtos = new ArrayList<>();
+        if (cuentas != null) {
+            for (Cuenta cuenta : cuentas) {
+                dtos.add(toDTO(cuenta));
+            }
+        }
+        return dtos;
+    }
+
+    /**
+     * Convierte una lista de CuentaDTOs a lista de Cuentas.
+     *
+     * @param dtos lista de DTOs
+     * @return lista de entidades Cuenta
+     */
+    public static List<Cuenta> toEntityList(List<CuentaDTO> dtos) {
+        List<Cuenta> cuentas = new ArrayList<>();
+        if (dtos != null) {
+            for (CuentaDTO dto : dtos) {
+                cuentas.add(toEntity(dto));
+            }
+        }
+        return cuentas;
     }
 }

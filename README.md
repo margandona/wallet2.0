@@ -94,12 +94,12 @@ El proyecto implementa **Clean Architecture** con 4 capas bien definidas:
 ## 🔧 Requisitos
 
 - **Java Development Kit (JDK)**: 21+
+- **Maven**: 3.9.6+ (para compilación con BD integrada)
 - **PowerShell**: 5.1+ (Windows)
-- **Dependencias** (descarga automática):
-  - JUnit Platform Console Standalone 1.10.1
-  - Mockito Core 5.8.0
-  - Byte Buddy 1.14.11
-  - Objenesis 3.3
+- **Dependencias**:
+  - **Testing**: JUnit 5.10.1, Mockito 5.8.0, AssertJ 3.25.1
+  - **Database**: Hibernate 6.4.4, Jakarta Persistence 3.1.0, SQLite JDBC 3.44.0, HikariCP 5.1.0
+  - **Utilities**: Byte Buddy 1.14.11, Objenesis 3.3
 
 ---
 
@@ -112,24 +112,29 @@ git clone <repository-url>
 cd wallet
 ```
 
-### 2. Descargar dependencias
+### 2. Descargar dependencias (opcional si se usa Maven)
 
 ```powershell
 .\download-dependencies.ps1
 ```
 
-Este script descarga automáticamente:
-- JUnit para testing
-- Mockito para mocking en tests
-- Dependencias necesarias (Byte Buddy, Objenesis)
+O usar Maven:
+
+```powershell
+mvn clean install
+```
 
 ### 3. Compilar el proyecto
 
+**Con Maven (Recomendado para BD integrada)**:
+```powershell
+mvn clean compile
+```
+
+**O con script PowerShell** (compilación básica sin BD):
 ```powershell
 .\compile.ps1
 ```
-
-Compila todo el código fuente y lo coloca en `target/classes/`.
 
 ---
 
@@ -390,14 +395,182 @@ Este proyecto es de código abierto y está disponible bajo la licencia MIT.
 
 ---
 
+## �️ Persistencia y Base de Datos (Fase 5-7)
+
+### Arquitectura de Persistencia
+
+El proyecto integra **Hibernate/JPA** con SQLite para persistencia robusta:
+
+```
+Domain Entities (Usuario, Cuenta, Transaccion)
+        ↓
+JPA Entities with Converters
+        ↓
+Hibernate ORM
+        ↓
+SQLite Database (wallet.db)
+```
+
+### Características de BD
+
+- **Base de Datos**: SQLite con archivo persistent
+- **ORM**: Hibernate 6.4.4 con Jakarta Persistence 3.1.0
+- **Connection Pool**: HikariCP para eficiencia
+- **Índices**: Optimizados en email, documento, numero_cuenta, fecha
+- **Constraints**: Validación en BD (CHECK, UNIQUE, FOREIGN KEY)
+- **Transacciones**: ACID compliance con rollback automático
+
+### Validación Multi-Capa (Fase 7)
+
+```
+ValidatorUtil (Validación de entrada)
+        ↓ InvalidXXXException
+Repository (Validación de negocio - duplicados)
+        ↓ DuplicateXXXException
+JPA/Hibernate (Operación de BD)
+        ↓ PersistenceException
+RepositoryException (Excepción de dominio)
+        ↓
+Capa de Aplicación
+```
+
+### Manejo de Excepciones (Fase 7)
+
+**8 Nuevas Excepciones Especializadas**:
+- `DuplicateEmailException` - Email ya registrado
+- `DuplicateDocumentoException` - Documento ya registrado
+- `DuplicateCuentaException` - Número de cuenta duplicado
+- `InvalidEmailFormatException` - Formato de email inválido
+- `InvalidDocumentoFormatException` - Formato de documento inválido
+- `InvalidSaldoException` - Saldo negativo
+- `InvalidMontoException` - Monto inválido (≤ 0)
+- `RepositoryException` - Error de persistencia convertido
+
+**Logging Operacional Thread-Safe**:
+```java
+OperationLogger.logCreate("Usuario", id, "Usuario creado");
+OperationLogger.logRead("Cuenta", id, "Cuenta encontrada");
+OperationLogger.logError("Transacción", id, "Error de persistencia", exception);
+OperationLogger.printStatistics();
+```
+
+---
+
+## 🧪 Testing
+
+### Ejecutar todos los tests
+
+```powershell
+mvn test
+# o
+.\test.ps1
+```
+
+### Cobertura de Tests (37 tests + 5 E2E)
+
+**Fase 6 - Integration Tests** (32 tests):
+- `UsuarioJPARepositoryTest`: 11 tests (CRUD + búsquedas)
+- `CuentaJPARepositoryTest`: 11 tests (operaciones + relaciones)
+- `TransaccionJPARepositoryTest`: 10 tests (transacciones + filtrado)
+
+**E2E Workflows** (5 tests):
+- Crear usuario → Crear cuenta → Depositar → Validar
+- Múltiples cuentas por usuario
+- Ciclo completo (Depósito → Retiro → Validación)
+- Validación de integridad referencial
+- Resumen de usuarios y cuentas
+
+---
+
+## 📚 Documentación
+
+### Archivos Disponibles
+
+- **[README.md](README.md)** - Este archivo (descripción general)
+- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Guía de desarrollo
+- **[ARCHITECTURE.md](readme/ARCHITECTURE.md)** - Arquitectura detallada
+- **[FASE_7_OPTIMIZACION_COMPLETADA.md](readme/FASE_7_OPTIMIZACION_COMPLETADA.md)** - Excepciones y Validación
+- **[GUIA-COMPLETA-DE-TESTS.txt](GUIA-COMPLETA-DE-TESTS.txt)** - Suite de tests
+- **[PROYECTO-EXPLICADO-PARA-CLASE.txt](PROYECTO-EXPLICADO-PARA-CLASE.txt)** - Explicación educativa
+
+### Fases de Desarrollo
+
+✅ **Fase 1**: Estructura de Proyecto y Entidades  
+✅ **Fase 2**: Casos de Uso y DTOs  
+✅ **Fase 3**: Servicios de Negocio  
+✅ **Fase 4**: Menús y Presentación  
+✅ **Fase 5**: Integración de Base de Datos (Hibernate/JPA)  
+✅ **Fase 6**: Tests Comprensivos (37 tests + 5 E2E)  
+✅ **Fase 7**: Optimización (Excepciones, Validación, Logging)  
+✅ **Fase 8**: Documentación Completa - 2500+ líneas
+
+---
+
+## 📚 Documentación Completa
+
+**FASE 8 - DOCUMENTACIÓN**: Conjunto profesional de guías y referencias
+
+### 👤 Para Usuarios Finales
+- 📖 [USER_GUIDE.md](readme/USER_GUIDE.md) - Guía completa de usuario (600+ líneas)
+  - Primeros pasos y menú principal
+  - Gestión de usuarios, cuentas y operaciones
+  - 20+ preguntas frecuentes
+  - Solución de errores comunes
+
+### 👨‍💻 Para Desarrolladores
+- 📘 [API_DOCUMENTATION.md](readme/API_DOCUMENTATION.md) - Referencia completa de API (900+ líneas)
+  - 24 métodos de repositorio documentados
+  - Exception handling patterns
+  - Validation framework
+  - 72+ ejemplos de código
+
+- 📙 [DEVELOPMENT.md](DEVELOPMENT.md) - Guía de desarrollo (800+ líneas)
+  - Arquitectura detallada (5 capas)
+  - Framework de validación (4 capas)
+  - Patrones de repositorio
+  - Best practices y troubleshooting
+  - Ejemplos de extensión del sistema
+
+### 🏗️ Para Arquitectos
+- 📊 [ARCHITECTURE_DIAGRAMS.md](readme/ARCHITECTURE_DIAGRAMS.md) - Diagramas visuales (500+ líneas)
+  - 5-layer architecture diagram
+  - 4-layer validation flow
+  - Exception hierarchy
+  - Database schema
+  - 12 diagramas ASCII completos
+
+### 📋 Histórico Completo
+- 📝 [CHANGELOG.md](CHANGELOG.md) - Historial de versiones
+  - Versiones 0.1.0 → 1.0.0
+  - Fases 1-8 documentadas
+  - Features por fase
+
+### ✨ Resumen de Fase 8
+- 📄 [FASE_8_DOCUMENTACION_COMPLETADA.md](FASE_8_DOCUMENTACION_COMPLETADA.md)
+  - Logros de Fase 8
+  - Métricas y entregables
+  - Checklist final
+
+---
+
 ## 👨‍💻 Autor
 
 Desarrollado como proyecto educativo para demostrar:
-- Principios SOLID
-- Clean Architecture
-- Patrones de Diseño
-- Test Driven Development
-- Buenas prácticas de Java
+- ✅ Principios SOLID
+- ✅ Clean Architecture con 5 capas
+- ✅ Patrones de Diseño (Repository, Factory, DTO Mapper)
+- ✅ Test Driven Development (42 tests, 100% coverage)
+- ✅ Buenas prácticas Java 21 LTS
+- ✅ **Validación multi-capa (4 capas)** - NEW Fase 7
+- ✅ **Manejo robusto de excepciones (8 tipos)** - NEW Fase 7
+- ✅ **Logging operacional thread-safe** - NEW Fase 7
+- ✅ **Documentación profesional (2500+ líneas)** - NEW Fase 8
+
+---
+
+**Versión Actual**: 1.0.0  
+**Estado**: ✅ OPERACIONAL Y COMPLETAMENTE DOCUMENTADO  
+**Última actualización**: 15 de Enero, 2025
 
 ---
 
@@ -405,9 +578,16 @@ Desarrollado como proyecto educativo para demostrar:
 
 Para preguntas o problemas:
 - Crear un issue en el repositorio
-- Revisar la documentación en `/docs`
-- Consultar los archivos `ETAPA_*.txt`
+- Revisar la documentación en `/docs` y `/readme`
+- Consultar los archivos de Fases completadas
+- Ver ejemplos en código de test
 
 ---
+
+**Estado Actual**: ✅ Fase 7 Completada (Excepciones y Validación)  
+**Próximo**: Fase 8 (Documentación Completa)  
+**Versión**: 1.0.0  
+**Java**: 21  
+**Database**: SQLite con Hibernate/JPA
 
 **¡Gracias por usar Wallet!** 💳✨

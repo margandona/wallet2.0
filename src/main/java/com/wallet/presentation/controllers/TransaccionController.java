@@ -1,7 +1,6 @@
 package com.wallet.presentation.controllers;
 
 import com.wallet.application.dtos.TransaccionDTO;
-import com.wallet.application.dtos.requests.TransferirDineroRequest;
 import com.wallet.infrastructure.services.TransaccionService;
 import com.wallet.presentation.utils.ConsoleUtils;
 
@@ -30,8 +29,8 @@ public class TransaccionController {
     public List<TransaccionDTO> transferir() {
         ConsoleUtils.printHeader("TRANSFERIR DINERO");
         
-        String cuentaOrigenId = ConsoleUtils.readLine("ID cuenta origen: ");
-        String cuentaDestinoId = ConsoleUtils.readLine("ID cuenta destino: ");
+        String numeroCuentaOrigen = ConsoleUtils.readLine("Numero de cuenta origen: ");
+        String numeroCuentaDestino = ConsoleUtils.readLine("Numero de cuenta destino: ");
         BigDecimal monto = ConsoleUtils.readBigDecimal("Monto a transferir: $");
         String descripcion = ConsoleUtils.readLine("Descripcion (opcional): ");
         
@@ -41,8 +40,8 @@ public class TransaccionController {
         
         ConsoleUtils.printLine();
         System.out.println("Resumen de la transferencia:");
-        System.out.println("  Desde: " + cuentaOrigenId);
-        System.out.println("  Hacia: " + cuentaDestinoId);
+        System.out.println("  Desde: " + numeroCuentaOrigen);
+        System.out.println("  Hacia: " + numeroCuentaDestino);
         System.out.println("  Monto: " + ConsoleUtils.formatMoney(monto));
         ConsoleUtils.printLine();
         
@@ -52,11 +51,9 @@ public class TransaccionController {
         }
         
         try {
-            TransferirDineroRequest request = new TransferirDineroRequest(
-                cuentaOrigenId, cuentaDestinoId, monto, descripcion
+            List<TransaccionDTO> transacciones = transaccionService.transferirPorNumero(
+                numeroCuentaOrigen, numeroCuentaDestino, monto, descripcion
             );
-            
-            List<TransaccionDTO> transacciones = transaccionService.transferir(request);
             ConsoleUtils.printSuccess("Transferencia realizada exitosamente!");
             ConsoleUtils.printInfo("Se generaron " + transacciones.size() + " transacciones.");
             return transacciones;

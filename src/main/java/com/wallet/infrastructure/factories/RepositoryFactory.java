@@ -3,9 +3,9 @@ package com.wallet.infrastructure.factories;
 import com.wallet.domain.repositories.IUsuarioRepository;
 import com.wallet.domain.repositories.ICuentaRepository;
 import com.wallet.domain.repositories.ITransaccionRepository;
-import com.wallet.infrastructure.repositories.UsuarioRepositoryInMemory;
-import com.wallet.infrastructure.repositories.CuentaRepositoryInMemory;
-import com.wallet.infrastructure.repositories.TransaccionRepositoryInMemory;
+import com.wallet.infrastructure.repositories.UsuarioJPARepository;
+import com.wallet.infrastructure.repositories.CuentaJPARepository;
+import com.wallet.infrastructure.repositories.TransaccionJPARepository;
 
 /**
  * Fábrica de Repositorios (Factory Pattern).
@@ -15,15 +15,15 @@ import com.wallet.infrastructure.repositories.TransaccionRepositoryInMemory;
  * 
  * Ventajas:
  * - Desacoplamiento: Los clientes no conocen las implementaciones concretas
- * - Reutilización: Una única instancia compartida (memoria)
+ * - Reutilización: Una única instancia compartida
  * - Flexibilidad: Fácil cambio de implementaciones
  */
 public class RepositoryFactory {
     
-    // Instancias únicas (Singleton)
-    private static final IUsuarioRepository usuarioRepository = new UsuarioRepositoryInMemory();
-    private static final ICuentaRepository cuentaRepository = new CuentaRepositoryInMemory();
-    private static final ITransaccionRepository transaccionRepository = new TransaccionRepositoryInMemory();
+    // Instancias únicas (Singleton) - USANDO JPA PARA PERSISTENCIA
+    private static final IUsuarioRepository usuarioRepository = new UsuarioJPARepository();
+    private static final ICuentaRepository cuentaRepository = new CuentaJPARepository();
+    private static final ITransaccionRepository transaccionRepository = new TransaccionJPARepository();
     
     // Constructor privado para evitar instanciación
     private RepositoryFactory() {
@@ -53,16 +53,9 @@ public class RepositoryFactory {
     
     /**
      * Limpia todos los repositorios (útil para testing).
+     * NOT APPLICABLE para JPA repositories.
      */
     public static void limpiarTodos() {
-        if (usuarioRepository instanceof UsuarioRepositoryInMemory) {
-            ((UsuarioRepositoryInMemory) usuarioRepository).limpiar();
-        }
-        if (cuentaRepository instanceof CuentaRepositoryInMemory) {
-            ((CuentaRepositoryInMemory) cuentaRepository).limpiar();
-        }
-        if (transaccionRepository instanceof TransaccionRepositoryInMemory) {
-            ((TransaccionRepositoryInMemory) transaccionRepository).limpiar();
-        }
+        // NO-OP: JPA repositories manejan datos en BD, no en memoria
     }
 }
