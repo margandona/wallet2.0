@@ -37,6 +37,7 @@ Tu documento debe tener estas secciones en orden:
 #### Objetivo
 
 Desarrollar un sistema de billetera digital que permita a los usuarios:
+
 - Registrarse con email y documento únicos
 - Crear múltiples cuentas bancarias en diferentes monedas
 - Realizar transacciones (depósitos, retiros, transferencias)
@@ -46,6 +47,7 @@ Desarrollar un sistema de billetera digital que permita a los usuarios:
 #### Alcance
 
 El sistema implementa las siguientes funcionalidades:
+
 - **Gestión de Usuarios**: Registro, búsqueda, listado
 - **Gestión de Cuentas**: Crear, activar, consultar saldo
 - **Transacciones**: Depósitos, retiros, transferencias
@@ -130,10 +132,12 @@ UQ = Unique (Único)
 ### Explicación de Relaciones
 
 **USUARIOS (1) ─── (N) CUENTAS**
+
 - Un usuario puede tener múltiples cuentas
 - Al eliminar usuario → Se eliminan sus cuentas (CASCADE)
 
 **CUENTAS (1) ─── (N) TRANSACCIONES**
+
 - Una cuenta puede tener múltiples transacciones
 - Al eliminar cuenta → Se eliminan sus transacciones (CASCADE)
 
@@ -330,25 +334,18 @@ ORDER BY cantidad DESC;
 
 ### ¿Cómo Tomar Capturas de Pantalla?
 
-#### Captura 1: BD Creada (wallet.db)
+#### Captura 1: BD Creada (wallet.db) con python verify_db.py
 
-1. Abre el archivo:
-   ```
-   C:\Users\marga\Desktop\NeekWorld\boot android\wallet\wallet.db
-   ```
+![1767161609282](image/INSTRUCCIONES_DOCUMENTO_WORD/1767161609282.png)
 
-2. Usa **SQLite Browser** (aplicación gratuita) o **DB Browser for SQLite**
+![1767161644279](image/INSTRUCCIONES_DOCUMENTO_WORD/1767161644279.png)
 
-3. Verifica las 3 tablas: USUARIOS, CUENTAS, TRANSACCIONES
-
-4. Toma captura mostrando:
-   - Nombre del archivo (wallet.db)
-   - Las 3 tablas listadas
-   - Tamaño de la BD
+![1767161673723](image/INSTRUCCIONES_DOCUMENTO_WORD/1767161673723.png)
 
 #### Captura 2: Esquema de Tablas
 
 En SQLite Browser:
+
 1. Click en cada tabla
 2. Muestra "Create SQL" → Verás el CREATE TABLE
 3. Toma captura del esquema
@@ -450,25 +447,25 @@ TRANSACCIÓN ACID:
   1. Buscar cuenta origen → Validar saldo >= 1000 ✓
   2. Buscar cuenta destino → Validar existe ✓
   3. BEGIN TRANSACTION
-     
+   
      a) Actualizar cuenta origen:
         UPDATE cuentas 
         SET saldo = saldo - 1000
         WHERE numero_cuenta = '1234567890'
-        
+      
      b) Insertar transacción SALIDA:
         INSERT INTO transacciones
         VALUES (UUID, [cuenta_origen_id], 'TRANSFERENCIA_SALIDA', 1000, ...)
-        
+      
      c) Actualizar cuenta destino:
         UPDATE cuentas 
         SET saldo = saldo + 1000
         WHERE numero_cuenta = '0987654321'
-        
+      
      d) Insertar transacción ENTRADA:
         INSERT INTO transacciones
         VALUES (UUID, [cuenta_destino_id], 'TRANSFERENCIA_ENTRADA', 1000, ...)
-        
+      
   4. COMMIT (si todo OK)
      O ROLLBACK (si hay error)
 
@@ -538,21 +535,21 @@ D = Durabilidad  → Los datos persisten en disco
 ### Opción A: Usar DB Browser for SQLite (RECOMENDADO)
 
 1. **Descargar**: https://sqlitebrowser.org/
-
 2. **Abrir BD**:
+
    - Archivo → Abrir Base de Datos
    - Navega a: `C:\Users\marga\Desktop\NeekWorld\boot android\wallet\wallet.db`
-
 3. **Ver Tablas**:
+
    - Pestaña "Database Structure"
    - Verás las 3 tablas: usuarios, cuentas, transacciones
-
 4. **Ver Datos**:
+
    - Haz clic en tabla
    - Pestaña "Browse Data"
    - Verás los registros
-
 5. **Ejecutar SQL**:
+
    - Pestaña "Execute SQL"
    - Pega los scripts del punto 3️⃣
    - Click "Execute"
@@ -578,6 +575,7 @@ D = Durabilidad  → Los datos persisten en disco
 ### Paso a Paso en Microsoft Word
 
 **1. Crear Portada**
+
 ```
 PROYECTO WALLET 2.0
 Billetera Digital con SQLite
@@ -588,9 +586,11 @@ Versión: 1.0.0
 ```
 
 **2. Introducción**
+
 - Copia la sección "1️⃣ INTRODUCCIÓN" arriba
 
 **3. Diagrama ER**
+
 - Opción A: Copia el texto del diagrama como imagen
 - Opción B: Usa herramienta online para generar diagrama:
   - Lucidchart (https://www.lucidchart.com)
@@ -598,18 +598,22 @@ Versión: 1.0.0
   - Creately (https://creately.com)
 
 **4. Scripts SQL**
+
 - Copia la sección "3️⃣ SCRIPTS SQL" exactamente como está
 
 **5. Capturas de Pantalla**
+
 - Inserta 5-6 capturas de:
   - Estructura de tablas
   - Datos en BD
   - Resultados de consultas
 
 **6. Explicación de Funcionamiento**
+
 - Copia la sección "5️⃣ EXPLICACIÓN DE FUNCIONAMIENTO"
 
 **7. Conclusión**
+
 ```
 Este proyecto demuestra la implementación de un sistema
 de persistencia con SQLite y Hibernate ORM siguiendo
@@ -714,16 +718,19 @@ Lo que necesitas:
 ## 🔗 HERRAMIENTAS RECOMENDADAS
 
 **Para BD SQLite:**
+
 - DB Browser for SQLite (https://sqlitebrowser.org/) ⭐ MEJOR
 - DBeaver (https://dbeaver.io/)
 - VS Code + SQLite Extension
 
 **Para crear Diagrama ER:**
+
 - Draw.io (https://draw.io) - GRATIS
 - Lucidchart (https://lucidchart.com)
 - Creately (https://creately.com)
 
 **Para crear Word:**
+
 - Microsoft Word (Online o Desktop)
 - Google Docs (exporta a Word)
 - LibreOffice Writer
