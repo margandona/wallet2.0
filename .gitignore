@@ -60,23 +60,22 @@ wallet.db
 wallet.db-shm
 wallet.db-wal
 
-# Python/Testing scripts
-*.py
-test-*.txt
-test-*.ps1
-test-*.bat
-check_db.py
-verify_db.py
-show-results.py
-input.txt
-input-create.txt
+# Python/Testing scripts (optional - comment if you want to track them)
+# *.py
+# test-*.txt
+# test-*.ps1
+# test-*.bat
+# check_db.py
+# verify_db.py
+# show-results.py
+# input.txt
+# input-create.txt
 
 # Temporary files
 *.tmp
 *.bak
 .DS_Store
 Thumbs.db
-META-INF/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
@@ -98,6 +97,17 @@ bin/
 /dist/
 /nbdist/
 /.nb-gradle/
+
+# Python environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# JDK/JRE folders
+openJdk-*/
+jdk*/
+jre*/
 
 # VS Code
 .vscode/

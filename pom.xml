@@ -8,7 +8,7 @@
     <groupId>com.wallet</groupId>
     <artifactId>wallet-app</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>Wallet Application</name>
     <description>Sistema de Billetera Digital con Clean Architecture</description>
@@ -34,6 +34,21 @@
     </properties>
 
     <dependencies>
+        <!-- Jakarta Servlet API (provided by the servlet container) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jakarta JSP API (provided by the servlet container) -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>3.1.1</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- JUnit 5 para Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -121,6 +136,30 @@
 
     <build>
         <plugins>
+            <!-- Maven WAR Plugin for web packaging -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+
+            <!-- Jetty Maven Plugin for local web runs -->
+            <plugin>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-maven-plugin</artifactId>
+                <version>12.0.12</version>
+                <configuration>
+                    <httpConnector>
+                        <port>8090</port>
+                    </httpConnector>
+                    <webApp>
+                        <contextPath>/wallet</contextPath>
+                    </webApp>
+                </configuration>
+            </plugin>
             <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
