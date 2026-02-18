@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
+             version="3.1">
+
+    <persistence-unit name="WalletPU" transaction-type="RESOURCE_LOCAL">
+        <!-- Proveedor JPA -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Entidades JPA -->
+        <class>com.wallet.infrastructure.entities.UsuarioJPAEntity</class>
+        <class>com.wallet.infrastructure.entities.CuentaJPAEntity</class>
+        <class>com.wallet.infrastructure.entities.TransaccionJPAEntity</class>
+
+        <!-- Propiedades de Hibernate -->
+        <properties>
+<!-- Conexión a SQLite -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:wallet.db"/>
+
+            <!-- Pool de conexiones con HikariCP -->
+            <property name="hibernate.hikari.maximumPoolSize" value="1"/>
+            <property name="hibernate.hikari.minimumIdle" value="1"/>
+
+            <!-- Estrategia de generación de schema -->
+            <!-- update: Crea tablas si no existen, las actualiza si es necesario -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- Mostrar SQL en consola (útil para debugging) -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="true"/>
+
+            <!-- Optimizaciones -->
+            <property name="hibernate.jdbc.batch_size" value="20"/>
+            <property name="hibernate.jdbc.fetch_size" value="50"/>
+            <property name="hibernate.jdbc.use_scrollable_resultset" value="false"/>
+
+            <!-- Logging de Hibernate (opcional) -->
+            <!-- <property name="hibernate.generate_statistics" value="false"/> -->
+        </properties>
+    </persistence-unit>
+</persistence>

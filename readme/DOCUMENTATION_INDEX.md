@@ -145,6 +145,19 @@ mvn exec:java -Dexec.mainClass="com.wallet.Main"
 
 ---
 
+### 1.1. PLAN_INTEGRACION_REQUERIMIENTOS.md (Integracion MVC/JSP)
+**Ubicación**: `wallet/PLAN_INTEGRACION_REQUERIMIENTOS.md`  
+**Líneas**: ~120  
+**Audiencia**: PMs, Tech Leads, Devs
+
+**Contenido**:
+- Requerimientos nuevos (resumen)
+- Brechas vs estado actual
+- Fases de migracion a MVC/JSP
+- Criterios de aceptacion
+
+---
+
 ### 2. USER_GUIDE.md (Para Usuarios)
 **Ubicación**: `readme/USER_GUIDE.md`  
 **Líneas**: 600+  
