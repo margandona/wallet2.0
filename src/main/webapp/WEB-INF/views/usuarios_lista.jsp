@@ -1,24 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Usuarios</title>
+    <title>Lista de Usuarios - AlkeWallet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/app.css">
 </head>
 <body>
     <div class="page">
-        <div class="card">
-            <h1>Usuarios</h1>
-            
-            <form class="form" method="post" action="<%= request.getContextPath() %>/usuarios/lista">
-                <fieldset>
-                    <legend>Filtros</legend>
-                    <label>Buscar por email
-                        <input type="text" name="email" value="<%= request.getAttribute("emailFiltro") != null ? request.getAttribute("emailFiltro") : "" %>" placeholder="ejemplo@correo.com">
+        <header class="app-header">
+            <h1>👥 Lista de Usuarios</h1>
+            <p class="subtitle">Gestiona y consulta usuarios del sistema</p>
+        </header>
+        
+        <main class="card" role="main">
+            <form class="form" method="post" action="<%= request.getContextPath() %>/usuarios/lista" aria-label="Formulario de filtros de usuarios">
+                <fieldset aria-labelledby="filtros-usuarios-legend">
+                    <legend id="filtros-usuarios-legend">🔍 Filtros de búsqueda</legend>
+                    <label for="emailFiltro">
+                        Buscar por email
+                        <input 
+                            type="text" 
+                            id="emailFiltro"
+                            name="email" 
+                            value="<%= request.getAttribute("emailFiltro") != null ? request.getAttribute("emailFiltro") : "" %>" 
+                            placeholder="ejemplo@correo.com"
+                            aria-label="Filtrar por email">
                     </label>
-                    <label>Estado
-                        <select name="estado">
+                    <label for="estadoFiltro">
+                        Estado
+                        <select id="estadoFiltro" name="estado" aria-label="Filtrar por estado">
                             <option value="TODOS" <%= "TODOS".equals(request.getAttribute("estadoFiltro")) || request.getAttribute("estadoFiltro") == null ? "selected" : "" %>>Todos</option>
                             <option value="ACTIVOS" <%= "ACTIVOS".equals(request.getAttribute("estadoFiltro")) ? "selected" : "" %>>Solo activos</option>
                             <option value="INACTIVOS" <%= "INACTIVOS".equals(request.getAttribute("estadoFiltro")) ? "selected" : "" %>>Solo inactivos</option>
@@ -26,17 +37,18 @@
                     </label>
                 </fieldset>
 
-                <label>Resultados por pagina
-                    <select name="tamano">
+                <label for="tamanoUsuarios">📄 Resultados por página
+                    <select id="tamanoUsuarios" name="tamano" aria-label="Seleccionar cantidad de resultados">
                         <option value="10" <%= request.getAttribute("tamano") != null && (Integer)request.getAttribute("tamano") == 10 ? "selected" : "" %>>10</option>
                         <option value="20" <%= request.getAttribute("tamano") != null && (Integer)request.getAttribute("tamano") == 20 ? "selected" : "" %>>20</option>
+                        <option value="50" <%= request.getAttribute("tamano") != null && (Integer)request.getAttribute("tamano") == 50 ? "selected" : "" %>>50</option>
                     </select>
                 </label>
                 
                 <input type="hidden" name="pagina" value="1">
                 
                 <div class="actions">
-                    <button type="submit">Buscar</button>
+                    <button type="submit">🔍 Buscar</button>
                     <a class="muted" href="<%= request.getContextPath() %>/">Volver</a>
                 </div>
             </form>
@@ -57,32 +69,43 @@
                     if (estadoFiltro == null) estadoFiltro = "TODOS";
                 %>
                 
-                <div class="muted">
-                    Total: <strong><%= totalUsuarios %></strong> | 
-                    Pagina <strong><%= paginaActual %></strong> de <strong><%= totalPaginas %></strong>
+                <div class="results-info" role="status" aria-live="polite">
+                    <span class="badge">Total: <strong><%= totalUsuarios %></strong> usuarios</span>
+                    <span class="text-muted">Página <strong><%= paginaActual %></strong> de <strong><%= totalPaginas %></strong></span>
                 </div>
                 
-                <table>
+                <table role="table" aria-label="Tabla de usuarios">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Documento</th>
-                            <th>Estado</th>
+                            <th scope="col">👤 Nombre</th>
+                            <th scope="col">📧 Email</th>
+                            <th scope="col">🆔 Documento</th>
+                            <th scope="col">✅ Estado</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% if (usuarios.isEmpty()) { %>
                             <tr>
-                                <td colspan="4" style="text-align: center;">No se encontraron usuarios</td>
+                                <td colspan="4" style="text-align: center; padding: 2rem;">
+                                    <span class="text-muted">No se encontraron usuarios</span>
+                                </td>
                             </tr>
                         <% } else { %>
-                            <% for (com.wallet.application.dtos.UsuarioDTO u : usuarios) { %>
+                            <% for (com.wallet.application.dtos.UsuarioDTO u : usuarios) { 
+                                String estadoBadge = u.isActivo() ? "badge badge-success" : "badge badge-danger";
+                            %>
                                 <tr>
-                                    <td><%= u.getNombreCompleto() %></td>
+                                    <td><strong><%= u.getNombreCompleto() %></strong></td>
                                     <td><%= u.getEmail() %></td>
-                                    <td><%= u.getTipoDocumento() %> - <%= u.getNumeroDocumento() %></td>
-                                    <td><span class="badge"><%= u.isActivo() ? "Activo" : "Inactivo" %></span></td>
+                                    <td>
+                                        <span class="badge badge-info"><%= u.getTipoDocumento() %></span> 
+                                        <%= u.getNumeroDocumento() %>
+                                    </td>
+                                    <td>
+                                        <span class="<%= estadoBadge %>">
+                                            <%= u.isActivo() ? "✓ Activo" : "✗ Inactivo" %>
+                                        </span>
+                                    </td>
                                 </tr>
                             <% } %>
                         <% } %>
@@ -90,16 +113,20 @@
                 </table>
                 
                 <% if (totalPaginas > 1) { %>
-                    <div class="actions" style="margin-top: 1rem;">
+                    <nav class="pagination" aria-label="Navegación de páginas de usuarios">
                         <% if (paginaActual > 1) { %>
                             <form method="post" action="<%= request.getContextPath() %>/usuarios/lista" style="display: inline;">
                                 <input type="hidden" name="pagina" value="<%= paginaActual - 1 %>">
                                 <input type="hidden" name="tamano" value="<%= tamano %>">
                                 <input type="hidden" name="email" value="<%= emailFiltro %>">
                                 <input type="hidden" name="estado" value="<%= estadoFiltro %>">
-                                <button type="submit">← Anterior</button>
+                                <button type="submit" class="btn-secondary" aria-label="Ir a página anterior">← Anterior</button>
                             </form>
                         <% } %>
+                        
+                        <span class="pagination-info" role="status" aria-live="polite">
+                            Página <%= paginaActual %> de <%= totalPaginas %>
+                        </span>
                         
                         <% if (paginaActual < totalPaginas) { %>
                             <form method="post" action="<%= request.getContextPath() %>/usuarios/lista" style="display: inline;">
@@ -107,13 +134,17 @@
                                 <input type="hidden" name="tamano" value="<%= tamano %>">
                                 <input type="hidden" name="email" value="<%= emailFiltro %>">
                                 <input type="hidden" name="estado" value="<%= estadoFiltro %>">
-                                <button type="submit">Siguiente →</button>
+                                <button type="submit" class="btn-secondary" aria-label="Ir a página siguiente">Siguiente →</button>
                             </form>
                         <% } %>
-                    </div>
+                    </nav>
                 <% } %>
             <% } %>
-        </div>
+        </main>
+        
+        <footer class="app-footer">
+            <p>&copy; 2026 AlkeWallet | <a href="<%= request.getContextPath() %>/">Inicio</a></p>
+        </footer>
     </div>
 </body>
 </html>

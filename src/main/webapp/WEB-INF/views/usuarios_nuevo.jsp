@@ -1,38 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear usuario</title>
+    <title>Crear Usuario - AlkeWallet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/app.css">
 </head>
 <body>
     <div class="page">
-        <div class="card">
-            <h1>Crear usuario</h1>
-            <form class="form" method="post" action="<%= request.getContextPath() %>/usuarios/nuevo">
-                <label>Nombre
-                    <input type="text" name="nombre" required>
+        <header class="app-header">
+            <h1>👤 Crear Usuario</h1>
+            <p class="subtitle">Registra un nuevo usuario en el sistema</p>
+        </header>
+        
+        <main class="card" role="main">
+            <form class="form" method="post" action="<%= request.getContextPath() %>/usuarios/nuevo" aria-label="Formulario de creación de usuario">
+                <label for="nombre">
+                    Nombre <span aria-label="requerido">*</span>
+                    <input 
+                        type="text" 
+                        id="nombre"
+                        name="nombre" 
+                        placeholder="Ej: Juan"
+                        required
+                        aria-required="true">
                 </label>
-                <label>Apellido
-                    <input type="text" name="apellido" required>
+                <label for="apellido">
+                    Apellido <span aria-label="requerido">*</span>
+                    <input 
+                        type="text" 
+                        id="apellido"
+                        name="apellido" 
+                        placeholder="Ej: Pérez"
+                        required
+                        aria-required="true">
                 </label>
-                <label>Email
-                    <input type="email" name="email" required>
+                <label for="email">
+                    Email <span aria-label="requerido">*</span>
+                    <input 
+                        type="email" 
+                        id="email"
+                        name="email" 
+                        placeholder="ejemplo@correo.com"
+                        required
+                        aria-required="true">
                 </label>
-                <label>Tipo de documento
-                    <select name="tipoDocumento" required>
-                        <option value="">Seleccione</option>
+                <label for="tipoDocumento">
+                    Tipo de documento <span aria-label="requerido">*</span>
+                    <select id="tipoDocumento" name="tipoDocumento" required aria-required="true">
+                        <option value="">— Seleccione —</option>
                         <option value="DNI">DNI</option>
                         <option value="PASAPORTE">PASAPORTE</option>
-                        <option value="CEDULA">CEDULA</option>
+                        <option value="CEDULA">CÉDULA</option>
                     </select>
                 </label>
-                <label>Numero de documento
-                    <input type="text" name="numeroDocumento" required>
+                <label for="numeroDocumento">
+                    Número de documento <span aria-label="requerido">*</span>
+                    <input 
+                        type="text" 
+                        id="numeroDocumento"
+                        name="numeroDocumento" 
+                        placeholder="Ej: 12345678"
+                        required
+                        aria-required="true">
                 </label>
                 <div class="actions">
-                    <button type="submit">Crear</button>
+                    <button type="submit">✅ Crear Usuario</button>
                     <a class="muted" href="<%= request.getContextPath() %>/">Volver</a>
                 </div>
             </form>
@@ -42,13 +75,29 @@
             <% if (request.getAttribute("usuario") != null) { %>
                 <% com.wallet.application.dtos.UsuarioDTO usuario =
                     (com.wallet.application.dtos.UsuarioDTO) request.getAttribute("usuario"); %>
-                <div class="alert success">
-                    <div>ID: <strong><%= usuario.getId() %></strong></div>
-                    <div>Nombre: <strong><%= usuario.getNombreCompleto() %></strong></div>
-                    <div>Email: <strong><%= usuario.getEmail() %></strong></div>
-                </div>
+                <section class="alert success" role="region" aria-label="Usuario creado exitosamente">
+                    <h2 style="margin-top: 0; font-size: 1.2rem;">✅ Usuario creado exitosamente</h2>
+                    <div style="display: grid; gap: 0.5rem; margin-top: 1rem;">
+                        <div>
+                            <span class="text-muted">ID:</span> 
+                            <span class="badge badge-info"><%= usuario.getId() %></span>
+                        </div>
+                        <div>
+                            <span class="text-muted">Nombre completo:</span> 
+                            <strong><%= usuario.getNombreCompleto() %></strong>
+                        </div>
+                        <div>
+                            <span class="text-muted">Email:</span> 
+                            <strong><%= usuario.getEmail() %></strong>
+                        </div>
+                    </div>
+                </section>
             <% } %>
-        </div>
+        </main>
+        
+        <footer class="app-footer">
+            <p>&copy; 2026 AlkeWallet | <a href="<%= request.getContextPath() %>/">Inicio</a></p>
+        </footer>
     </div>
 </body>
 </html>
