@@ -1,18 +1,51 @@
 # 💳 WALLET 2.0 - Billetera Digital
 
-> **Sistema de gestión de billetera digital con persistencia en SQLite, arquitectura limpia y conversor de divisas multicurrencia.**
+> **Sistema de gestión de billetera digital con persistencia en SQLite, arquitectura limpia, conversor de divisas multicurrencia e interfaz web MVC.**
 
 [![Java](https://img.shields.io/badge/Java-21%20LTS-orange.svg)](https://www.oracle.com/java/)
+[![Jakarta EE](https://img.shields.io/badge/Jakarta%20EE-10-red.svg)](https://jakarta.ee/)
 [![Database](https://img.shields.io/badge/Database-SQLite-green.svg)](https://www.sqlite.org/)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-blue.svg)](/BASE_DE_DATOS.md)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)(/LICENSE)
+
+---
+
+## 🌐 Interfaz Web (NUEVO)
+
+El proyecto ahora incluye una interfaz web completa con Jakarta EE 10:
+
+### Iniciar servidor web
+```powershell
+mvn jetty:run -DskipTests
+# Acceder a: http://localhost:8090/wallet/
+```
+
+### Funcionalidades web
+- ✅ Consultar saldo de cuenta
+- ✅ Depositar y retirar fondos
+- ✅ Transferencias entre cuentas
+- ✅ **Historial de transacciones** con paginación y filtros (tipo, fechas)
+- ✅ Crear, buscar y listar usuarios
+- ✅ **Listado de usuarios** con paginación y filtros (email, estado)
+- ✅ Validaciones de formulario y manejo de errores
+
+**Stack tecnológico web:**
+- Jakarta Servlet 6.0 + JSP 3.1
+- Jetty 12 (EE10)
+- CSS responsivo
+- Arquitectura MVC
 
 ---
 
 ## 🚀 Inicio Rápido
 
-### Ejecutar Inmediatamente
+### Opción 1: Interfaz Web (Recomendado)
+```powershell
+mvn jetty:run -DskipTests
+# Abrir: http://localhost:8090/wallet/
+```
+
+### Opción 2: Aplicación de Consola
 
 ```powershell
 cd "C:\Users\marga\Desktop\NeekWorld\boot android\wallet"
@@ -33,8 +66,10 @@ java -jar "target/wallet-app-1.0.0-jar-with-dependencies.jar"
 | Documento | Descripción |
 |-----------|-------------|
 | **[BASE_DE_DATOS.md](./BASE_DE_DATOS.md)** | 📊 Arquitectura, diseño de tablas, relaciones ER, implementación JPA/Hibernate |
-| **[COMO_EJECUTAR.md](./COMO_EJECUTAR.md)** | ▶️ Guía paso a paso de ejecución, menús, ejemplos de uso |
+| **[COMO_EJECUTAR.md](./COMO_EJECUTAR.md)** | ▶️ Guía paso a paso de ejecución de consola, menús, ejemplos de uso |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | 🏗️ Arquitectura técnica, capas, patrones |
+| **[PLAN_INTEGRACION_REQUERIMIENTOS.md](./PLAN_INTEGRACION_REQUERIMIENTOS.md)** | 🔄 Plan de integración de interfaz web MVC |
+| **[PAGINACION_FILTROS_COMPLETADO.md](./PAGINACION_FILTROS_COMPLETADO.md)** | 📄 Documentación técnica de paginación y filtros |
 
 ---
 
